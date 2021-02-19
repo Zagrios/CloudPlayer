@@ -3,23 +3,23 @@
       <h2>Inscription</h2>
       <div class="input-wrapper">
           <label for="username-input">Nom d'utilisateur</label>
-          <input id="username-input" type="text" placeholder="Nom d'utilisateur">
+          <input v-model="username" id="username-input" type="text" placeholder="Nom d'utilisateur">
       </div>
       <div class="input-wrapper">
           <label for="email-input">Adresse e-mail</label>
-          <input id="email-input" type="email" placeholder="Adresse e-mail">
+          <input v-model="email" id="email-input" type="email" placeholder="Adresse e-mail">
       </div>
       <div class="input-wrapper">
           <label for="email-cfirm-input">Confirmez votre adresse e-mail</label>
-          <input id="email-cfirm-input" type="email" placeholder="Confirmez votre adresse e-mail">
+          <input v-model="emailCfrm" id="email-cfirm-input" type="email" placeholder="Confirmez votre adresse e-mail">
       </div>
       <div class="input-wrapper">
           <label for="password-input">Mot de passe</label>
-          <input id="password-input" type="password" placeholder="Mot de passe">
+          <input v-model="password" id="password-input" type="password" placeholder="Mot de passe">
       </div>
       <div class="input-wrapper">
           <label for="password-cfrm-input">Confirmez votre mot de passe</label>
-          <input id="password-cfrm-input" type="password" placeholder="Confirmez votre mot de passe">
+          <input v-model="passCfrm" id="password-cfrm-input" type="password" placeholder="Confirmez votre mot de passe">
       </div>
       <span id="register-btn" class="full-btn">S'incrire</span>
       <span class="separator-register"></span>
@@ -30,8 +30,20 @@
 <script>
 export default {
     name:"registerform",
+    data(){
+        return{
+            username: '',
+            password: '',
+            passCfrm: '',
+            email:'',
+            emailCfrm:'',
+        }
+    },
     methods:{
-        alreadyRegistred:function() {this.$emit("switch");}
+        alreadyRegistred:function() {this.$emit("switch");},
+        register:function(){
+
+        },
     }
 }
 </script>

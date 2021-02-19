@@ -3,11 +3,11 @@
 			<h2>Connexion</h2>
 			<div class="input-wrapper">
 				<label for="login-username">Nom d'utilisateur</label>
-				<input id="login-username" type="text" placeholder="Nom d'utilisateur" />
+				<input v-model="username" id="login-username" type="text" placeholder="Nom d'utilisateur" />
 			</div>
 			<div class="input-wrapper">
 				<label for="login-password">Mot de passe</label>
-				<input id="login-password" type="password" placeholder="Mot de passe" />
+				<input v-model="password" id="login-password" type="password" placeholder="Mot de passe" />
 			</div>
 			<div class="input-wrapper">
 				<span id="forgot-password">Mot de passe oublié ?</span>
@@ -27,8 +27,15 @@
 <script>
 export default {
     name:"loginform",
+	data(){
+		return{
+			username:'',
+			password:'',
+		}
+	},
     methods:{
-        noAccountClick:function(){this.$emit("switch");}
+        noAccountClick:function(){console.log(this.$store.getters.getToken);this.$emit("switch");},
+		login:function(){},
     }
 }
 </script>
