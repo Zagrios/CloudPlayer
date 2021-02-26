@@ -76,6 +76,12 @@ export default {
 				color: rgb(68, 68, 68);
 				margin-bottom: 30px;
 			}
+			.input-form-error{
+				color: rgb(248, 50, 0);
+				font-size: .85em;
+				font-weight: 600;
+			}
+
 		}
 		.button-wrapper {
 			display: flex;
