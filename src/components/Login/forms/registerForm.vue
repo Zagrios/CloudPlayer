@@ -33,6 +33,7 @@
 <script>
 
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 export default {
     name:"registerform",
@@ -57,6 +58,7 @@ export default {
             if(this.username.length <= 0){this.usernameError = "Veuillez saisir un nom d'utilisateur.";}else{this.usernameError = ''}
             if(this.email.length <= 0){this.emailError = "Veuillez saisir une adresse e-mail.";}else{this.emailError = ''}
             if(this.password.length <= 0){this.passwordError = 'Veuillez saisir un mot de passe.'}else{this.passwordError = ''}
+            if(!this.validateEmail(this.email)){this.emailError = "Votre adresse e-mail est invalide."}else{this.emailError = ''}
             if(this.passwordError == '' && this.emailError == '' && this.usernameError == ''){this.createUser();}
             
         },
@@ -69,8 +71,39 @@ export default {
                 method:'POST',
                 url:'http://localhost/cloudmusic_back/user/forms/register.php',
                 data
-            })
+            }).then(response => {
+                console.log(response)
+                if(response['status'] == 200 && response['data'] == 0)
+                {
+                    Swal.fire({
+                        title:"Compte crée !",
+                        icon:'success',
+                        showConfirmButton:false,
+                        timer:1500,
+                        timerProgressBar: true,
+                    }).then(() => {
+                        this.alreadyRegistred();
+                    });
+                }
+                else
+                {
+                    let title = "Une erreur est survenue !";
+                    title = response['data'] == 1 ? "Nom d'utilisateur déjà utilisé !" : response['data'] == 2 ? "Adresse e-mail déjà utilisé !" : title;
+                    Swal.fire({
+                        title:title,
+                        icon:'error',
+                        width : '35em',
+                        showConfirmButton:false,
+                        timer:1900,
+                        timerProgressBar: true,
+                    });
+                }
+            });
         },
+        validateEmail:function(email){
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
     }
 }
 </script>
