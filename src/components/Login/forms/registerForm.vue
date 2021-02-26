@@ -21,13 +21,16 @@
           <label for="password-cfrm-input">Confirmez votre mot de passe</label>
           <input v-model="passCfrm" id="password-cfrm-input" type="password" placeholder="Confirmez votre mot de passe">
       </div>
-      <span id="register-btn" class="full-btn">S'incrire</span>
+      <span @click="register" id="register-btn" class="full-btn">S'incrire</span>
       <span class="separator-register"></span>
       <span @click="alreadyRegistred" class="full-btn">J'ai déja un compte</span>
   </form>
 </template>
 
 <script>
+
+import axios from 'axios';
+
 export default {
     name:"registerform",
     data(){
@@ -42,7 +45,15 @@ export default {
     methods:{
         alreadyRegistred:function() {this.$emit("switch");},
         register:function(){
-
+            var data = new FormData();
+            data.append('username', this.username);
+            data.append('password', this.password);
+            data.append('email', this.email);
+            axios({
+                method:'POST',
+                url:'http://localhost/cloudmusic_back/user/forms/register.php',
+                data
+            })
         },
     }
 }
