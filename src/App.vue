@@ -39,4 +39,7 @@ export default {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+body {
+  font-family: 'Montserrat',Avenir, Helvetica, Arial, sans-serif;
+}
 </style>
