@@ -4,20 +4,22 @@
 			<div class="input-wrapper">
 				<label for="login-username">Nom d'utilisateur</label>
 				<input v-model="username" id="login-username" type="text" placeholder="Nom d'utilisateur" />
+				<span v-if="usernameError != ''" class="input-form-error">{{usernameError}}</span>
 			</div>
 			<div class="input-wrapper">
 				<label for="login-password">Mot de passe</label>
 				<input v-model="password" id="login-password" type="password" placeholder="Mot de passe" />
+				<span v-if="passwordError != ''" class="input-form-error">{{passwordError}}</span>
 			</div>
 			<div class="input-wrapper">
 				<span id="forgot-password">Mot de passe oublié ?</span>
 			</div>
 			<div class="button-wrapper">
 				<span class="toggle-wrapper">
-					<input type="checkbox" name="" id="remember-me" />
+					<input v-model="rememberMe" type="checkbox" name="" id="remember-me" />
 					<label for="remember-me">Rester connecté</label>
 				</span>
-				<span class="loggin-btn">Se connecter</span>
+				<span @click="login" class="loggin-btn">Se connecter</span>
 			</div>
 			<span class="separator"></span>
 			<span @click="noAccountClick" id="no-account-btn" class="full-btn">Je n'ai pas de compte</span>
@@ -25,17 +27,56 @@
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2'
+
 export default {
     name:"loginform",
 	data(){
 		return{
 			username:'',
 			password:'',
+			usernameError: '',
+			passwordError: '',
+			rememberMe:false,
 		}
 	},
     methods:{
-        noAccountClick:function(){console.log(this.$store.getters.getToken);this.$emit("switch");},
-		login:function(){},
+        noAccountClick:function(){this.$emit("switch");},
+		login:function(){
+			if(this.$store.getters.getToken != null){return;}
+			let data = new FormData();
+			data.append('username',this.username);
+			data.append('password', this.password);
+			data.append('platform', navigator.platform);
+			axios({
+                method:'POST',
+                url:'http://localhost/cloudmusic_back/user/forms/login.php',
+                data
+            }).then((response) => {
+				if(response.status == 200 && response.data.token != null)
+				{
+					this.$store.state.token = response.data.token;
+					this.$emit("sessionCreated", this.rememberMe);
+				}
+				else
+				{
+					if(response.data == 1){this.usernameError = "Le nom d'utilisateur est invalide."}else{this.usernameError = '';}
+					if(response.data == 2){this.passwordError = "Le mot de passe est invalide."}else{this.passwordError = '';}
+					if(response.data < 0 || response.status != 200)
+					{
+						Swal.fire({
+							title:"Une erreur est survenue !",
+							icon:'error',
+							width : '35em',
+							showConfirmButton:false,
+							timer:1900,
+							timerProgressBar: true,
+						});
+					}
+				}
+			});
+		},
     }
 }
 </script>

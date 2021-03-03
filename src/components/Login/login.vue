@@ -1,7 +1,7 @@
 <template>
 	<div id="login-wrapper">
 		<h1 class="title">CloudMusic</h1>
-		<loginform v-if="isToggle" v-on:switch="toggle()"></loginform>
+		<loginform v-if="isToggle" v-on:switch="toggle()" v-on:sessionCreated="loginToken"></loginform>
 		<registerform v-else v-on:switch="toggle()"></registerform>
 	</div>
 </template>
@@ -19,6 +19,9 @@ export default {
 	},
 	methods:{
 		toggle:function(){this.isToggle = !this.isToggle;},
+		loginToken:function(remember){
+			console.log(remember);
+		},
 	},
 	components: {loginform, registerform}
 };

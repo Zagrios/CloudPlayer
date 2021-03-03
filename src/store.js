@@ -5,10 +5,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		token: "AABA",
+		token: null,
+		username: null,
 	},
 	getters:{
 		getToken: state => {return state.token;},
+		getUserName: state => {return state.username;},
 	},
 });
 export default store;
