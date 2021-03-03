@@ -5,6 +5,9 @@
 <script>
 export default {
     name: 'Home',
+    beforeCreate(){
+      if(this.$store.getters.getToken == null || this.$store.getters.getUserName == null){this.$router.push({path:"/"})}
+    },
 }
 </script>
 
