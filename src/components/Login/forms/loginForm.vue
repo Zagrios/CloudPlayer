@@ -44,20 +44,24 @@ export default {
     methods:{
         noAccountClick:function(){this.$emit("switch");},
 		login:function(){
+			console.log("DD")
 			if(this.$store.getters.getToken != null){return;}
 			let data = new FormData();
 			data.append('username',this.username);
 			data.append('password', this.password);
 			data.append('platform', navigator.platform);
+			
 			axios({
                 method:'POST',
                 url:'http://localhost/cloudmusic_back/user/forms/login.php',
                 data
             }).then((response) => {
+				
 				if(response.status == 200 && response.data.token != null)
 				{
-					this.$store.state.token = response.data.token;
-					this.$emit("sessionCreated", this.rememberMe);
+					
+					this.$emit("sessionCreated", this.rememberMe, response.data.token);
+					console.log("CC")
 				}
 				else
 				{
