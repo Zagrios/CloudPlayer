@@ -40,7 +40,8 @@ export default {
 	height: 100%;
 	.title {
 		display: block;
-		margin-top: 50px;
+		margin-top: 0;
+		padding-top: 50px;
 		color: black;
 		font-weight: 800;
 		letter-spacing: 1px;
