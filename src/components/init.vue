@@ -1,5 +1,7 @@
 <template>
-	<Login v-if="!haveToken" v-on:createCookie="createCookie" v-on:createSession="loginToken"></Login>
+	<div>
+		<Login v-if="!haveToken" v-on:createCookie="createCookie" v-on:createSession="loginToken"></Login>
+	</div>
 </template>
 
 <script>
@@ -45,6 +47,7 @@ export default {
                 url:'http://localhost/cloudmusic_back/user/forms/login.php',
                 data
 			}).then((response) => {
+				console.log("AA")
 				if(response.status == 200 && response.data.username != null)
 				{
 					this.$store.state.token = token;
@@ -53,15 +56,24 @@ export default {
 				}
 				else
 				{
-					this.haveToken = false;
+					console.log("erreur")
 					this.$store.state.token = null;
 					this.$store.state.username = null;
 					this.createCookie("token", "", -1);
 				}
 			})
+			.catch(() =>{
+				console.log("BB")
+				this.haveToken = false;
+			})
+			.then(() => {
+				this.$store.state.isLoad = false;
+			})
+			
 		}
 	},
-	created(){
+	beforeMount(){
+		this.$store.state.isLoad = true;
 		if(this.getCookie("token") != null){this.loginToken(this.getCookie("token"))}else{this.haveToken = false;}
 	}
 };
