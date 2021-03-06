@@ -8,6 +8,7 @@ const store = new Vuex.Store({
 		token: null,
 		username: null,
 		isLoad: false,
+		currentPlaying: null,
 	},
 	getters:{
 		getToken: state => {return state.token;},
