@@ -76,8 +76,6 @@ export default {
     #player{
         width: 100%;
         height: 75px;
-        position: absolute;
-        bottom: 0;
         background-color: #181818;
         display: flex;
         align-items: center;
