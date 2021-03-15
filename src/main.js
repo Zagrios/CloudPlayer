@@ -3,8 +3,10 @@ import App from './App.vue'
 import store from "./store"
 import VueRouter from "vue-router"
 import routes from './routes'
+import {func} from './func'
 
 Vue.config.productionTip = false
+Vue.prototype.$func = func
 
 Vue.use(VueRouter)
 const router = new VueRouter({
