@@ -13,12 +13,6 @@ export default {
 	components:{
 		Loader,
 	},
-	methods:{
-		
-		test:function(){
-			console.log("test")
-		}
-	}
   
 }
 </script>
