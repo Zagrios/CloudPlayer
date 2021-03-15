@@ -1,7 +1,7 @@
 <template>
     <div id="home">
         <div id="content">
-            <nav-bar></nav-bar>
+            <nav-bar v-on:logOut="logOut"></nav-bar>
         </div>
         <player></player>
     </div>
@@ -10,12 +10,37 @@
 <script>
 import player from "./player/player"
 import navBar from "./content/navBar"
+import axios from "axios"
 
 export default {
     name: 'Home',
     components:{
       player,
       navBar,
+    },
+    methods:{
+        logOut: function() {
+            this.$func.createCookie("token", "", -1);
+            let data = new FormData();
+			data.append("token", this.$store.getters.getToken);
+            axios({
+				method:'POST',
+                url:'http://localhost/cloudmusic_back/user/forms/logout.php',
+                data
+			}).then((response) => {
+				if(response.status == 200 && response.data == 0)
+				{
+					console.log("Déconnecté !");
+				}
+				else
+				{
+					console.log("erreur")
+				}
+			})
+            this.$store.state.username = null;
+            this.$store.state.token = null;
+            this.$router.push({path:"/"})
+        }
     },
     beforeCreate(){
       if(this.$store.getters.getToken == null || this.$store.getters.getUserName == null){this.$router.push({path:"/"})}

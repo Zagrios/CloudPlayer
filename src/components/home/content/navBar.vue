@@ -23,12 +23,12 @@
 
                 <div class="element" v-bind:class="{expand: expanded}">
                     <b-icon-music-note-list class="icon"></b-icon-music-note-list>
-                    <span>Playlistes</span>
+                    <span>Playlists</span>
                 </div>
 
                 <div class="element" v-bind:class="{expand: expanded}">
                     <b-icon-heart class="icon"></b-icon-heart>
-                    <span>Favorits</span>
+                    <span>Favoris</span>
                 </div>
                 
                 <div class="element" v-bind:class="{expand: expanded}">
@@ -50,7 +50,7 @@
 
                 <hr class="spacer">
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded}" @click="logOut()">
                     <b-icon-box-arrow-left class="icon"></b-icon-box-arrow-left>
                     <span>Déconnexion</span>
                 </div>
@@ -70,7 +70,9 @@ export default {
         }
     },
     methods:{
-
+        logOut: function(){
+            this.$emit("logOut");
+        },
     },
     components:{
         BIconList,
@@ -127,6 +129,7 @@ export default {
                 flex-direction: row;
                 overflow: hidden;
                 letter-spacing: 1px;
+                cursor: pointer;
                 position: relative;
                 transition: width .3s;
                 
