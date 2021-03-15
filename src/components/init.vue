@@ -72,9 +72,9 @@ export default {
 			
 		}
 	},
-	beforeMount(){
+	mounted(){
 		this.$store.state.isLoad = true;
-		if(this.getCookie("token") != null){this.loginToken(this.getCookie("token"))}else{this.haveToken = false;}
+		if(this.getCookie("token") != null){this.loginToken(this.getCookie("token"))}else{this.haveToken = false; this.$store.state.isLoad = false;}
 	}
 };
 </script>
