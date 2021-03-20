@@ -23,7 +23,7 @@ export default {
 			console.log("BB")
 			if(remember)
 			{
-				this.$emit("createCookie", "token", token, "60");
+				this.$func.createCookie("token", token, 60);
 			}
 			this.$emit("createSession", token);
 		},
