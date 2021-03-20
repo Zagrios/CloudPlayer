@@ -1,5 +1,5 @@
 <template>
-  <div id="nav-bar">
+  <div id="side-bar">
       <div id="bar" class="expanded" v-bind:class="{expand: expanded}">
           <div id="element-wrapper">
                 <div class="element" v-bind:class="{expand: expanded}" @click="expanded = !expanded">
@@ -16,7 +16,7 @@
 
                 <hr class="spacer">
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" :key="updateKey" v-bind:class="{expand: expanded, highlight:checkPath('/home/tracks')}" @click="changePath('/home/tracks')">
                     <b-icon-music-note-beamed class="icon"></b-icon-music-note-beamed>
                     <span>Musiques</span>
                 </div>
@@ -67,12 +67,19 @@ export default {
     data(){
         return{
             expanded: true,
+            updateKey: 0,
         }
     },
     methods:{
         logOut: function(){
             this.$emit("logOut");
         },
+        changePath:function(path) {
+            if(path != this.$router.currentRoute.path){this.$router.push({path:path}); this.updateKey++;}
+        },
+        checkPath: function(path) {
+            return path == this.$router.currentRoute.path ? true : false;
+        }
     },
     components:{
         BIconList,
@@ -89,16 +96,17 @@ export default {
 </script>
 
 <style lang="scss">
-#nav-bar{
+#side-bar{
     height: 100%;
     width: fit-content;
     display: flex;
     align-content: center;
     align-items: center;
     #bar{
-        height: 80%;
+        height: 85%;
         min-width: 60px;
         width: 60px;
+        margin-right: 40px;
         background-color: #181818;
         border-right: 1px solid #363636;
         border-top: 1px solid #363636;
@@ -154,6 +162,9 @@ export default {
             }
             .expand{
                 width: 185px;
+            }
+            .highlight{
+                background-color: #292929;
             }
             .spacer{
                 margin-top: 5px;
