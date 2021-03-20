@@ -1,7 +1,8 @@
 <template>
     <div id="home">
         <div id="content">
-            <nav-bar v-on:logOut="logOut"></nav-bar>
+            <side-bar v-on:logOut="logOut"></side-bar>
+            <router-view></router-view>
         </div>
         <player></player>
     </div>
@@ -9,14 +10,14 @@
 
 <script>
 import player from "./player/player"
-import navBar from "./content/navBar"
+import sideBar from "./content/sideBar"
 import axios from "axios"
 
 export default {
     name: 'Home',
     components:{
       player,
-      navBar,
+      sideBar,
     },
     methods:{
         logOut: function() {
