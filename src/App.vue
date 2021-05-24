@@ -8,6 +8,7 @@
 <script>
 import Loader from "./components/loader"
 
+
 export default {
 	name: 'App',
 	components:{

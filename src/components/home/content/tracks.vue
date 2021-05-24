@@ -1,22 +1,49 @@
 <template>
-  <div id="tracks">
-      <div id="nav-bar">
-          <h1>Musiques</h1>
-          <span id="search-bar">
-              <input type="text" name="" id="" placeholder="Rechercher ...">
-          </span>
-      </div>
-  </div>
+    <div id="tracks-page">
+        <modal v-bind:visible="upload" v-bind:type="'upload'" v-on:close="closeModal"></modal>
+        <div id="nav-bar">
+            <h1>Musiques</h1>
+            <span id="search-bar">
+                <input type="text" name="" id="" placeholder="Rechercher ...">
+            </span>
+            <span id="upload-btn" @click="upload = true">
+                <b-icon-cloud-arrow-up id="up-icon"/>
+                <span>Ajouter</span>
+            </span>
+        </div>
+        <div id="tracks">
+
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
+import Modal from "../../Modals/modal.vue"
 
+import {BIconCloudArrowUp} from 'bootstrap-vue';
+
+export default {
+    data(){
+        return{
+            upload : false,
+        }
+    },
+    components:{
+        'modal':Modal,
+        BIconCloudArrowUp,
+    },
+    methods:{
+        closeModal : function()
+        {
+            this.upload = false;
+        }
+    }
 }
 </script>
 
 <style lang="scss">
-#tracks{
+#tracks-page{
+    width: 100%;
     #nav-bar{
         display: flex;
         align-content: center;
@@ -49,6 +76,29 @@ export default {
                 letter-spacing: 1px;
                 outline: none;
                 color:inherit
+            }
+        }
+        #upload-btn{
+            height: 20px;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            align-content: center;
+            background-color: #181818;
+            border: solid black 0;
+            border-radius: 20px;
+            padding: 0 10px 0 10px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            span{
+                font-size: 0.83em;
+            }
+            #up-icon{
+                margin-right: 7px;
+                font-size: 1.15em;
+            }
+            &:hover{
+                background-color: #202020;
             }
         }
     }
