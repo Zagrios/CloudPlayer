@@ -23,6 +23,7 @@
 <script>
 
 import {BIconDownload} from 'bootstrap-vue';
+import axios from "axios";
 
 export default {
     name:'Upload',
@@ -51,7 +52,23 @@ export default {
 		},
 		uploadMusics: function()
 		{
-			console.log(this.musics);
+			if(!this.musics || !this.musics.length){return;}
+			//console.log(this.musics[0]);
+			var fd =  new FormData();
+			for(var i = 0; i < this.musics.length; i++)
+			{
+				fd.append('files[]',this.musics[i])
+			}
+			fd.append('user', this.$store.getters.getUserName)
+			axios({
+				method:'POST',
+                url:'http://localhost/cloudmusic_back/user/actions/upload.php',
+                data:fd,
+				headers: {'Content-Type': 'multipart/form-data' },
+			}).then((response) => {
+				console.log(response);
+			})
+
 		}
 	}
 	

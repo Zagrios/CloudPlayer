@@ -9,6 +9,7 @@
 
 import Upload from './modalType/upload.vue'
 
+
 export default {
 	name:'modal',
 	components:{

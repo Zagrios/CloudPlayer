@@ -20,6 +20,7 @@
 <script>
 import Modal from "../../Modals/modal.vue"
 
+
 import {BIconCloudArrowUp} from 'bootstrap-vue';
 
 export default {
