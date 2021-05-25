@@ -41,10 +41,29 @@ export default {
             this.$store.state.username = null;
             this.$store.state.token = null;
             this.$router.push({path:"/"})
+        },
+        loadTracks: function() {
+            if(!this.$store.getters.getToken){return;}
+            let data = new FormData();
+            data.append("token", this.$store.getters.getToken);
+            axios({
+                method:'POST',
+                url:'http://localhost/cloudmusic_back/user/actions/getAllTracksInfo.php',
+                data
+            }).then((response) => {
+                var data = response.data;
+                if(response && response.status && response.status == 200 && data && data.status == 0 && data.tracks && data.tracks.length > 0)
+                {
+                    this.$store.state.tracks = data.tracks;
+                }
+            });
         }
     },
     beforeCreate(){
-      if(this.$store.getters.getToken == null || this.$store.getters.getUserName == null){this.$router.push({path:"/"})}
+      if(this.$store.getters.getToken == null || this.$store.getters.getUserName == null){this.$router.push({path:"/"});}
+    },
+    mounted(){
+        this.loadTracks();
     },
     
 }

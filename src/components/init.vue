@@ -61,7 +61,7 @@ export default {
 			
 		}
 	},
-	mounted(){
+	created(){
 		this.$store.state.isLoad = true;
 		if(this.getCookie("token") != null){this.loginToken(this.getCookie("token"))}else{this.haveToken = false; this.$store.state.isLoad = false;}
 	}

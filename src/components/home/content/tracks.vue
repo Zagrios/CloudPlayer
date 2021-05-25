@@ -11,26 +11,26 @@
                 <span>Ajouter</span>
             </span>
         </div>
-        <div id="tracks">
-
-        </div>
+        <track-list></track-list>
     </div>
 </template>
 
 <script>
 import Modal from "../../Modals/modal.vue"
 
-
 import {BIconCloudArrowUp} from 'bootstrap-vue';
+import tracksList from '../fragments/tracksList.vue';
 
 export default {
     data(){
         return{
             upload : false,
+            
         }
     },
     components:{
         'modal':Modal,
+        'track-list':tracksList,
         BIconCloudArrowUp,
     },
     methods:{

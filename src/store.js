@@ -9,10 +9,12 @@ const store = new Vuex.Store({
 		username: null,
 		isLoad: false,
 		currentPlaying: null,
+		tracks:null,
 	},
 	getters:{
 		getToken: state => {return state.token;},
 		getUserName: state => {return state.username;},
+		getTracks: state => {return state.tracks;},
 	},
 });
 export default store;
