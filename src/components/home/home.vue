@@ -80,12 +80,13 @@ export default {
   color: white;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 #content{
-    flex: 1;
     display: flex;
     flex-direction: row;
+    max-height: calc(100% - 75px);
 }
 
 </style>

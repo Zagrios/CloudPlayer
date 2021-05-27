@@ -98,6 +98,7 @@ export default {
 <style lang="scss">
 #side-bar{
     height: 100%;
+    max-height: 100%;
     width: fit-content;
     display: flex;
     align-content: center;

@@ -45,6 +45,7 @@ export default {
 <style lang="scss">
 #tracks-page{
     width: 100%;
+    height: 100%;
     #nav-bar{
         display: flex;
         align-content: center;
