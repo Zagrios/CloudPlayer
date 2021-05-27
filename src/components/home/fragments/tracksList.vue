@@ -23,6 +23,7 @@ export default {
 #track-list{
     width: 100%;
     max-height: calc(100% - 75px);
+    height: calc(100% - 75px);
     display: flex;
     flex-direction: row;
     flex-flow: row wrap;

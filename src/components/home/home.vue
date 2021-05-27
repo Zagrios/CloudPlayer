@@ -76,6 +76,8 @@ export default {
   height: 100%;
   max-height: 100%;
   max-width: 100%;
+  min-width: 100%;
+  min-height: 100%;
   background-color: black;
   color: white;
   display: flex;
@@ -87,6 +89,7 @@ export default {
     display: flex;
     flex-direction: row;
     max-height: calc(100% - 75px);
+    min-height: calc(100% - 75px);;
 }
 
 </style>

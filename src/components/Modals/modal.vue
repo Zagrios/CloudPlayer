@@ -26,6 +26,7 @@ export default {
 
 .modal{
 	position: fixed;
+	z-index: 50;
     top: 0;
     bottom: 0;
     right: 0;

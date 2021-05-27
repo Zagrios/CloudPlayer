@@ -1,10 +1,10 @@
 <template>
-    <div class="track-wrapper">
+    <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="track" v-bind:style="{ backgroundImage: 'url(' + getImg() + ')' }" :key="refreshToken">
-            <span class="info-btn"><b-icon-info/></span>
+            <span class="info-btn" @click="switchInfoOpen"><b-icon-info/></span>
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
-                    <span class="title">{{this.track.name}}</span>
+                    <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle}}</span></span>
                     <span class="fav-btn"><b-icon-heart/></span>
                 </div>
             </div>
@@ -22,16 +22,29 @@ export default {
         return{
             refreshToken:0,
             info:false,
+            slideTitle:false,
         }
     },
     methods:{
         getImg: function(){
             if(this.track.img && this.track.img != ""){return this.track.img}
             else{return require("@/assets/defaultTrack.png")}
-        }
+        },
+        hoverAction:function()
+        {
+            if(this.isTitleOverflowing()){ this.slideTitle = true;}
+        },
+        isTitleOverflowing: function() {
+            var element = this.$refs.titleText;
+            return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
+        },
+        switchInfoOpen:function(){ this.info = !this.info; console.log(this.info) }
     },
     computed:{
-        
+        getTitle(){
+            if(this.track.title && this.track.title != ""){return this.track.title;}
+            else{return this.track.filename;}
+        },
     },
     props:{
 		track:Object(),
@@ -98,6 +111,10 @@ export default {
         justify-content: center;
         color: white;
         font-size: 1.1em;
+        cursor: pointer;
+        &:hover{
+            backdrop-filter: blur(20px) brightness(30%);
+        }
     }
     .info-display{
         position: absolute;
@@ -113,10 +130,23 @@ export default {
             align-content: center;
             justify-content: space-between;
             .title{
+                position: relative;
+                overflow: hidden;
                 height: 100%;
+                width: 90%;
+                max-width: 90%;
                 letter-spacing: 1px;
                 font-size: .9em;
-                text-overflow: clip;
+                .title-text{
+                    white-space: nowrap;
+                    text-overflow: clip;
+                    position: absolute;
+                    height: 100%;
+                }
+                .slide{
+                    transform: translateX(calc(-100% + 187px));
+                    transition: all 1s linear;
+                }
             }
             .fav-btn{
                 height: 100%;
@@ -126,6 +156,11 @@ export default {
                 align-items: center;
                 margin-right: 3px;
                 font-size: .9em;
+                cursor: pointer;
+                transition: all .1s ease;
+                &:hover{
+                    color: crimson;
+                }
             }
         }
     }
@@ -138,5 +173,54 @@ export default {
 .closed{
     top: 90%;
 }
+
+/* #region marquee */
+
+.example1 {
+ height: 50px;	
+ overflow: hidden;
+ position: relative;
+}
+.example1 h3 {
+ font-size: 3em;
+ color: limegreen;
+ position: absolute;
+ width: 100%;
+ height: 100%;
+ margin: 0;
+ line-height: 50px;
+ text-align: center;
+ /* Starting position */
+ -moz-transform:translateX(100%);
+ -webkit-transform:translateX(100%);	
+ transform:translateX(100%);
+ /* Apply animation to this element */	
+ -moz-animation: example1 15s linear infinite;
+ -webkit-animation: example1 15s linear infinite;
+ animation: example1 15s linear infinite;
+}
+/* Move it (define the animation) */
+@-moz-keyframes example1 {
+ 0%   { -moz-transform: translateX(100%); }
+ 100% { -moz-transform: translateX(-100%); }
+}
+@-webkit-keyframes example1 {
+ 0%   { -webkit-transform: translateX(100%); }
+ 100% { -webkit-transform: translateX(-100%); }
+}
+@keyframes example1 {
+ 0%   { 
+ -moz-transform: translateX(100%); /* Firefox bug fix */
+ -webkit-transform: translateX(100%); /* Firefox bug fix */
+ transform: translateX(100%); 		
+ }
+ 100% { 
+ -moz-transform: translateX(-100%); /* Firefox bug fix */
+ -webkit-transform: translateX(-100%); /* Firefox bug fix */
+ transform: translateX(-100%); 
+ }
+}
+
+/* #endregion */
 
 </style>
