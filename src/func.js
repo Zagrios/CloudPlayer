@@ -7,5 +7,5 @@ export const func = {
 				expires = "; expires=" + date.toUTCString();
 			}
 			document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-     }
+     },
  }

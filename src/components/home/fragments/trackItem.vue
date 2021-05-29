@@ -40,6 +40,7 @@ export default {
     },
     methods:{
         download: function(){
+            this.switchInfoOpen();
             var token = this.$store.getters.getToken;
             var trackId = this.track.id;
             window.open("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);

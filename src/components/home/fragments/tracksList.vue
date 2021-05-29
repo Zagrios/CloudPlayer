@@ -1,7 +1,7 @@
 <template>
 	<div id="track-list">
 		<div id="wrapper">
-			<trackItem v-for="(track, index) in this.tracks" v-bind:key="index" :track="track"></trackItem>
+			<trackItem v-for="(track) in this.tracks" v-bind:key="track.id" :track="track"></trackItem>
 		</div>
 	</div>
 </template>

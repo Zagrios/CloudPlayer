@@ -73,19 +73,37 @@ export default {
 				headers: { "Content-Type": "multipart/form-data" },
 			}).then((response) => {
 				this.uploading = false;
-				if (response.status == 200 && response.data == 0) 
+				var data = response.data;
+				if (response.status == 200 && data.status == 0 && data.tracks) 
 				{
+					this.addMusicsToStore(data.tracks);
 					this.$emit('close');
 				} 
 				else 
 				{
 					this.error = true;
-					if(!response || !response.status || response.status != 200 || response.data == 1){this.errorMsg = "Une erreur est survenue"; return;}
-					else if(response.data == 2){this.errorMsg = "Type de fichier non valide"; return;}
+					if(!response || !response.status || response.status != 200 || data.status == 1){this.errorMsg = "Une erreur est survenue"; return;}
+					else if(data.status == 2){this.errorMsg = "Type de fichier non valide"; return;}
 					else{this.errorMsg = "Une erreur est survenue"; return;}
 				}
 			});
 		},
+		addMusicsToStore:function(tracks){
+			tracks.forEach(track => {
+				const index = this.$store.getters.getTracks.map(e => e.id).indexOf(track.id);
+				if(index != -1){ 
+					this.$store.state.tracks[index].album = track.album;
+					this.$store.state.tracks[index].artist = track.artist;
+					this.$store.state.tracks[index].duration = track.duration;
+					this.$store.state.tracks[index].filename = track.filename;
+					this.$store.state.tracks[index].id = track.id;
+					this.$store.state.tracks[index].size = track.size;
+					this.$store.state.tracks[index].title = track.title;
+					this.$store.state.tracks[index].type = track.type;
+				}
+				else{ this.$store.state.tracks.push(track); }
+			});
+		}
 	},
 };
 </script>

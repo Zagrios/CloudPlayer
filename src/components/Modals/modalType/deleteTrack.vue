@@ -47,15 +47,8 @@ export default {
             });
         },
         deleteTrackFromStore:function(id){
-            var size = Object.keys(this.$store.getters.getTracks).length;
-            for(var i = 0; i < size; i++)
-            {
-                if(this.$store.getters.getTracks[i].id == id)
-                {
-                    this.$store.state.tracks.splice(i, 1);
-                    break;
-                }
-            }
+            const index = this.$store.getters.getTracks.map(e => e.id).indexOf(id);
+            if(index != -1){ this.$store.state.tracks.splice(index, 1); }
         },
     },
     props:{
