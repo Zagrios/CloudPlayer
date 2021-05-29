@@ -1,7 +1,9 @@
 <template>
-  <div id="track-list">
-      <trackItem v-for="(track,index) in this.$store.getters.getTracks" v-bind:key="index" :track="track"></trackItem>
-  </div>
+	<div id="track-list">
+		<div id="wrapper">
+			<trackItem v-for="(track, index) in this.tracks" v-bind:key="index" :track="track"></trackItem>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -10,7 +12,8 @@ import trackItem from "./trackItem";
 export default {
     name:'tracksList',
     props:{
-        tracks:Array(),
+        tracks:Object(),
+        updateKey:Number,
     },
     components:{
         trackItem,
@@ -24,11 +27,14 @@ export default {
     width: 100%;
     max-height: calc(100% - 75px);
     height: calc(100% - 75px);
-    display: flex;
-    flex-direction: row;
-    flex-flow: row wrap;
-    overflow-x: hidden;
-    overflow-y: scroll;
+	overflow-y: scroll;
+	#wrapper{
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		flex-flow: row wrap;
+		overflow-x: hidden;
+	}
 }
 
 /* #region scrollbar*/

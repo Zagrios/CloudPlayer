@@ -1,44 +1,41 @@
 <template>
     <div id="tracks-page">
-        <modal v-bind:visible="upload" v-bind:type="'upload'" v-on:close="closeModal"></modal>
         <div id="nav-bar">
             <h1>Musiques</h1>
             <span id="search-bar">
                 <input type="text" name="" id="" placeholder="Rechercher ...">
             </span>
-            <span id="upload-btn" @click="upload = true">
+            <span id="upload-btn" @click="openModal">
                 <b-icon-cloud-arrow-up id="up-icon"/>
                 <span>Ajouter</span>
             </span>
         </div>
-        <track-list></track-list>
+        <track-list v-bind:tracks="this.$store.getters.getTracks"></track-list>
     </div>
 </template>
 
 <script>
-import Modal from "../../Modals/modal.vue"
 
 import {BIconCloudArrowUp} from 'bootstrap-vue';
 import tracksList from '../fragments/tracksList.vue';
+import { EventBus } from '@/event-bus.js'
 
 export default {
     data(){
         return{
-            upload : false,
-            
+            updateKey:0,
         }
     },
     components:{
-        'modal':Modal,
         'track-list':tracksList,
         BIconCloudArrowUp,
     },
     methods:{
-        closeModal : function()
-        {
-            this.upload = false;
+        openModal : function(){
+            EventBus.$emit('openModal', {type:'upload'});
         }
-    }
+    },
+    
 }
 </script>
 

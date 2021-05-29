@@ -28,7 +28,7 @@ import { BIconDownload } from "bootstrap-vue";
 import axios from "axios";
 
 export default {
-	name: "Upload",
+	name: "upload",
 	data() {
 		return {
 			musics: null,
@@ -115,6 +115,7 @@ export default {
 			margin-left: 5%;
 			margin-right: 5%;
 			letter-spacing: 1px;
+			color: white;
 		}
 		#error-msg{color: crimson; font-weight: 600;}
 	}
@@ -163,6 +164,7 @@ export default {
 				white-space: nowrap;
 				bottom: 40px;
 				letter-spacing: 1px;
+				color: white;
 			}
 		}
 	}
@@ -187,6 +189,7 @@ export default {
 			letter-spacing: 1px;
 			border-radius: 5px;
 			transition: all 0.1s ease;
+			color: white;
 		}
 		#saveBtn {
 			border: solid rgb(58, 212, 65) 1px;

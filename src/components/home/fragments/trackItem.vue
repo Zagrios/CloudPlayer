@@ -5,7 +5,19 @@
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
                     <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle}}</span></span>
-                    <span class="fav-btn"><b-icon-heart/></span>
+                    <span class="fav-btn" v-if="!info"><b-icon-heart/></span>
+                    <span class="fav-btn" v-else @click="switchInfoOpen"><b-icon-x-circle-fill/></span>
+                </div>
+                <div class="info-wrapper">
+                    <span>Artiste : {{getArtist()}}</span>
+                    <span>Album : {{getAlbum()}}</span>
+                    <span>Qualité : {{ this.track.type.toUpperCase()}}</span>
+                    <span>Durée : {{this.track.duration}}</span>
+                    <span>Taille : {{this.track.size}}Mo</span>
+                </div>
+                <div class="actions">
+                        <span class="download" title="Télécharger" @click="download"><b-icon-download/></span>
+                        <span class="delete" title="Supprimer" @click="openDeleteTrackModal"><b-icon-trash/></span>
                 </div>
             </div>
         </div>
@@ -14,7 +26,8 @@
 
 <script>
 import axios from "axios";
-import {BIconInfo, BIconHeart} from 'bootstrap-vue';
+import { EventBus } from '@/event-bus.js';
+import {BIconInfo, BIconHeart, BIconXCircleFill, BIconDownload, BIconTrash} from 'bootstrap-vue';
 
 export default {
     name:'trackItem',
@@ -26,9 +39,25 @@ export default {
         }
     },
     methods:{
+        download: function(){
+            var token = this.$store.getters.getToken;
+            var trackId = this.track.id;
+            window.open("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);
+        },
+        openDeleteTrackModal:function(){
+            EventBus.$emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle}});
+        },
         getImg: function(){
-            if(this.track.img && this.track.img != ""){return this.track.img}
+            if(this.track.img && this.track.img != ""){return this.track.img;}
             else{return require("@/assets/defaultTrack.png")}
+        },
+        getArtist: function(){
+            if(this.track.artist && this.track.artist != ""){return this.track.artist;}
+            else{return "Inconnu";}
+        },
+        getAlbum: function(){
+            if(this.track.album && this.track.album != ""){return this.track.album;}
+            else{return "Inconnu";}
         },
         hoverAction:function()
         {
@@ -38,7 +67,7 @@ export default {
             var element = this.$refs.titleText;
             return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
         },
-        switchInfoOpen:function(){ this.info = !this.info; console.log(this.info) }
+        switchInfoOpen:function(){ this.info = !this.info; }
     },
     computed:{
         getTitle(){
@@ -65,7 +94,7 @@ export default {
 		});
     },
     components:{
-        BIconInfo, BIconHeart
+        BIconInfo, BIconHeart,BIconXCircleFill, BIconDownload, BIconTrash,
     }
 }
 </script>
@@ -118,6 +147,9 @@ export default {
     }
     .info-display{
         position: absolute;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
         width: 100%;
         height: 100%;
         backdrop-filter: blur(10px) brightness(75%);
@@ -154,7 +186,7 @@ export default {
                 justify-content: center;
                 align-content: center;
                 align-items: center;
-                margin-right: 3px;
+                padding-right: 3px;
                 font-size: .9em;
                 cursor: pointer;
                 transition: all .1s ease;
@@ -163,64 +195,58 @@ export default {
                 }
             }
         }
+        .info-wrapper{
+            margin-top: 10px;
+            width: 100%;
+            height: 125px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: .85em;
+            span{
+                max-width: 100%;
+                margin-left: 5px;
+                letter-spacing: 1px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            
+        }
+        .actions{
+                width: 100%;
+                height: 25px;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                align-content: center;
+                justify-content: center;
+                border-top: rgba(0, 0, 0, 0.329) solid 1px;
+                span{
+                    display: flex;
+                    align-items: center;
+                    align-content: center;
+                    justify-content: center;
+                    width: 50%;
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    font-size: 1.2em;
+                    transition: background-color .1s ease;
+                    &:hover{background-color: rgba(0, 0, 0, 0.329);}
+                }
+            }
     }
 }
 
 .open{
     top: 0;
+    transition: all .2s ease;
 }
 
 .closed{
     top: 90%;
+    transition: all .2s ease;
 }
-
-/* #region marquee */
-
-.example1 {
- height: 50px;	
- overflow: hidden;
- position: relative;
-}
-.example1 h3 {
- font-size: 3em;
- color: limegreen;
- position: absolute;
- width: 100%;
- height: 100%;
- margin: 0;
- line-height: 50px;
- text-align: center;
- /* Starting position */
- -moz-transform:translateX(100%);
- -webkit-transform:translateX(100%);	
- transform:translateX(100%);
- /* Apply animation to this element */	
- -moz-animation: example1 15s linear infinite;
- -webkit-animation: example1 15s linear infinite;
- animation: example1 15s linear infinite;
-}
-/* Move it (define the animation) */
-@-moz-keyframes example1 {
- 0%   { -moz-transform: translateX(100%); }
- 100% { -moz-transform: translateX(-100%); }
-}
-@-webkit-keyframes example1 {
- 0%   { -webkit-transform: translateX(100%); }
- 100% { -webkit-transform: translateX(-100%); }
-}
-@keyframes example1 {
- 0%   { 
- -moz-transform: translateX(100%); /* Firefox bug fix */
- -webkit-transform: translateX(100%); /* Firefox bug fix */
- transform: translateX(100%); 		
- }
- 100% { 
- -moz-transform: translateX(-100%); /* Firefox bug fix */
- -webkit-transform: translateX(-100%); /* Firefox bug fix */
- transform: translateX(-100%); 
- }
-}
-
-/* #endregion */
 
 </style>

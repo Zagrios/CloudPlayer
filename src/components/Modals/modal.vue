@@ -1,24 +1,47 @@
 <template>
 	<div class="modal" v-if="visible">
-		<span id="background" @click="$emit('close')"></span>
-		<upload v-if="type == 'upload'" v-on:close="$emit('close')"></upload>
+		<span id="background" @click="closeModal"></span>
+		<upload v-if="type == 'upload'" v-on:close="closeModal"></upload>
+		<deleteTrack v-if="type == 'deleteTrack'" v-bind:track="this.passData" v-on:close="closeModal"></deleteTrack>
 	</div>
 </template>
 
 <script>
 
-import Upload from './modalType/upload.vue'
-
+import upload from './modalType/upload.vue'
+import deleteTrack from './modalType/deleteTrack.vue'
+import { EventBus } from '@/event-bus.js'
 
 export default {
 	name:'modal',
+	data(){
+		return{
+			visible: false,
+			type: "",
+			passData:null,
+		}
+	},
+	methods:{
+		openModal:function(data){
+			this.type = data.type;
+			if(data.parms){ this.passData = data.parms; }
+			this.visible = true;
+		},
+		closeModal:function(){
+			this.visible = false;
+			this.type = "";
+			this.passData = null;
+		}
+	},
 	components:{
-		'upload':Upload,
+		upload,
+		deleteTrack,
 	},
-	props:{
-		visible : Boolean,
-		type : String,
-	},
+	created(){
+		EventBus.$on('openModal', (data) => {
+			this.openModal(data);
+		})
+	}
 }
 </script>
 
