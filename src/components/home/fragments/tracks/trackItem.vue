@@ -1,11 +1,13 @@
 <template>
     <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
-        <div class="track" v-bind:style="{ backgroundImage: 'url(' + getImg() + ')' }" :key="refreshToken">
+        <div class="track">
+            <img :src="getImg()" :key="refreshToken"/>
             <span class="info-btn" @click="switchInfoOpen"><b-icon-info/></span>
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
                     <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle}}</span></span>
-                    <span class="fav-btn" v-if="!info"><b-icon-heart/></span>
+                    <span class="fav-btn" v-if="!info && this.track.isFav == false" @click="setFav(true)"><b-icon-heart/></span>
+                    <span class="fav-btn" v-else-if="!info && this.track.isFav == true" @click="setFav(false)"><b-icon-heart-fill/></span>
                     <span class="fav-btn" v-else @click="switchInfoOpen"><b-icon-x-circle-fill/></span>
                 </div>
                 <div class="info-wrapper">
@@ -27,7 +29,7 @@
 <script>
 import axios from "axios";
 import { EventBus } from '@/event-bus.js';
-import {BIconInfo, BIconHeart, BIconXCircleFill, BIconDownload, BIconTrash} from 'bootstrap-vue';
+import {BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash} from 'bootstrap-vue';
 
 export default {
     name:'trackItem',
@@ -68,6 +70,17 @@ export default {
             var element = this.$refs.titleText;
             return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
         },
+        setFav: function(fav){
+            var token = this.$store.getters.getToken;
+            var trackId = this.track.id;
+            var data = new FormData();
+            data.append("token", token);
+            data.append("trackId", trackId);
+            data.append("fav",fav);
+            axios.post('http://localhost/cloudmusic_back/user/actions/setTrackFav.php', data).then((response) => {
+                if(response.status == 200 && response.data == 0){ this.track.isFav = fav; }
+            });
+        },
         switchInfoOpen:function(){ this.info = !this.info; }
     },
     computed:{
@@ -80,6 +93,7 @@ export default {
 		track:Object(),
 	},
     created(){
+        if(this.track.img != null){return}
         var token = this.$store.getters.getToken;
         var trackId = this.track.id;
         axios({
@@ -95,7 +109,7 @@ export default {
 		});
     },
     components:{
-        BIconInfo, BIconHeart,BIconXCircleFill, BIconDownload, BIconTrash,
+        BIconInfo, BIconHeart,BIconXCircleFill, BIconDownload, BIconTrash, BIconHeartFill,
     }
 }
 </script>
@@ -115,12 +129,22 @@ export default {
         overflow: hidden;
         width: 200px;
         height: 200px;
-        background-size: cover;
         transition: all .1s ease; 
         position: relative;
         &:hover{
             width: 210px;
             height: 210px;
+        }
+        img{
+            position: absolute;
+            max-height: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            min-width: 100%;
+            object-fit:cover;
+            border-style: none;
+            top: 0;
+            left: 0;
         }
     }
 }

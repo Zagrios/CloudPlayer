@@ -54,7 +54,7 @@ export default {
                 var data = response.data;
                 if(response && response.status && response.status == 200 && data && data.status == 0 && data.tracks && data.tracks.length > 0)
                 {
-                    this.$store.state.tracks = data.tracks;
+                    this.$store.state.tracks = data.tracks.sort(this.$func.compareName);
                 }
             });
         }

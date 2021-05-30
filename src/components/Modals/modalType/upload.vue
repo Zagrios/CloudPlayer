@@ -11,7 +11,7 @@
 					<b-icon-download v-if="!uploading" class="icon" />
 					<div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 					<span v-if="!uploading">Glisser-déposer vos musiques</span>
-					<span v-else>Envoi en cours ...</span>
+					<span class="progress" v-else><span v-bind:style="{ width:this.uploadPercent+'%' }"></span></span>
 				</span>
 				<span id="files-text">{{ showFiles() }}</span>
 			</form>
@@ -33,6 +33,7 @@ export default {
 		return {
 			musics: null,
 			uploading: false,
+			uploadPercent: 0,
 			error : false,
 			errorMsg: "test",
 		};
@@ -41,6 +42,9 @@ export default {
 		BIconDownload,
 	},
 	methods: {
+		setProgressBar: function(percent){
+			this.uploadPercent = percent;
+		},
 		saveFiles: function (e) {
 			this.musics = e.target.files;
 		},
@@ -71,6 +75,7 @@ export default {
 				url: "http://localhost/cloudmusic_back/user/actions/upload.php",
 				data: fd,
 				headers: { "Content-Type": "multipart/form-data" },
+				onUploadProgress: progressEvent => { this.setProgressBar(Math.round((progressEvent.loaded * 100) / progressEvent.total)); }
 			}).then((response) => {
 				this.uploading = false;
 				var data = response.data;
@@ -172,6 +177,23 @@ export default {
 				.icon {
 					font-size: 3.5em;
 					margin-bottom: 5px;
+				}
+				.progress{
+					overflow: hidden;
+					width: 250px;
+					height: 5px;
+					background-color: #2b2b2b;
+					border: 0 solid black;
+					border-radius: 5px;
+					span{
+						display: block;
+						height: 100%;
+						max-width: 100%;
+						background-color: white;
+						border: 0 solid black;
+						border-radius: 5px;
+						transition: width .25s ease;
+					}
 				}
 			}
 			#files-text {

@@ -13,7 +13,6 @@ export default {
     name:'tracksList',
     props:{
         tracks:Object(),
-        updateKey:Number,
     },
     components:{
         trackItem,
@@ -27,11 +26,10 @@ export default {
     width: 100%;
     max-height: calc(100% - 75px);
     height: calc(100% - 75px);
-	overflow-y: scroll;
+    overflow-y: scroll;
 	#wrapper{
-		width: 100%;
+    width: fit-content;
 		display: flex;
-		flex-direction: row;
 		flex-flow: row wrap;
 		overflow-x: hidden;
 	}

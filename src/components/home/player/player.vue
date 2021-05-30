@@ -77,6 +77,8 @@ export default {
         width: 100%;
         height: 75px;
         min-height: 75px;
+        position: fixed;
+        bottom: 0;
         background-color: #181818;
         display: flex;
         align-items: center;
