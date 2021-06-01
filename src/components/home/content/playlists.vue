@@ -1,51 +1,51 @@
 <template>
-    <div id="tracks-page">
+	<div id="playlists-page">
         <div id="nav-bar">
-            <h1>Musiques</h1>
+            <h1>Playlists</h1>
             <span id="search-bar">
-                <input v-model="searchString" @keyup="search" type="text" placeholder="Rechercher ...">
+                <input v-model="searchString" type="text" placeholder="Rechercher ...">
             </span>
-            <span id="upload-btn" @click="openModal">
-                <b-icon-cloud-arrow-up id="up-icon"/>
-                <span>Ajouter</span>
+            <span id="create-btn">
+                <b-icon-plus id="create-icon"/>
+                <span>Créer</span>
             </span>
         </div>
-        <track-list v-bind:tracks="this.$store.getters.getTracks"></track-list>
+
     </div>
 </template>
 
 <script>
-
-import {BIconCloudArrowUp} from 'bootstrap-vue';
-import tracksList from '../fragments/tracks/tracksList.vue';
-import { EventBus } from '@/event-bus.js'
+import {BIconPlus} from 'bootstrap-vue';
+import axios from "axios";
 
 export default {
-    data(){
-        return{
-            updateKey:0,
-            searchString: "",
-        }
-    },
-    components:{
-        'track-list':tracksList,
-        BIconCloudArrowUp,
-    },
-    methods:{
-        openModal : function(){
-            EventBus.$emit('openModal', {type:'upload'});
-        },
-        search:function(){
-            if(!this.searchString){ this.$store.state.tracks = this.$store.state.tracks.sort(this.$func.compareName); }
-            else{ this.$store.state.tracks = this.$func.sortArrayBySearch(this.$store.state.tracks, this.searchString); }
-        }
-    },
-    
+    name:'playlists',
+	data(){
+		return{
+			searchString: "",
+		}
+	},
+	components:{BIconPlus},
+	created(){
+		if(this.$store.getters.getPlaylists){return;}
+		var token = this.$store.getters.getToken;
+		axios({
+			method: "GET",
+			url: "http://localhost/cloudmusic_back/user/actions/getPlaylists.php?token="+token,
+		}).then((response) => {
+			console.log(response);
+            var res = response.data;
+			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
+				console.log(res.playlists);
+			}
+		});
+	},
 }
 </script>
 
-<style lang="scss">
-#tracks-page{
+<style lang='scss'>
+
+#playlists-page{
     width: 100%;
     height: 100%;
     #nav-bar{
@@ -83,7 +83,7 @@ export default {
                 color:inherit
             }
         }
-        #upload-btn{
+        #create-btn{
             height: 20px;
             margin-left: 15px;
             display: flex;
@@ -92,15 +92,15 @@ export default {
             background-color: #181818;
             border: solid black 0;
             border-radius: 20px;
-            padding: 0 10px 0 10px;
+            padding: 0 10px 0 5px;
             letter-spacing: 1px;
             cursor: pointer;
             span{
                 font-size: 0.83em;
             }
-            #up-icon{
-                margin-right: 7px;
-                font-size: 1.15em;
+            #create-icon{
+                margin-right: 5px;
+                font-size: 1.4em;
             }
             &:hover{
                 background-color: #202020;
@@ -108,4 +108,5 @@ export default {
         }
     }
 }
+
 </style>

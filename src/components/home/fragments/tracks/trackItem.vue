@@ -81,7 +81,7 @@ export default {
                 if(response.status == 200 && response.data == 0){ this.track.isFav = fav; }
             });
         },
-        switchInfoOpen:function(){ this.info = !this.info; }
+        switchInfoOpen:function(){ this.info = !this.info; },
     },
     computed:{
         getTitle(){
@@ -92,7 +92,7 @@ export default {
     props:{
 		track:Object(),
 	},
-    created(){
+    mounted(){
         if(this.track.img != null){return}
         var token = this.$store.getters.getToken;
         var trackId = this.track.id;

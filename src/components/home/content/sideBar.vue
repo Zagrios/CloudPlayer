@@ -21,7 +21,7 @@
                     <span>Musiques</span>
                 </div>
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/favorites')}" @click="changePath('/home/playlists')">
                     <b-icon-music-note-list class="icon"></b-icon-music-note-list>
                     <span>Playlists</span>
                 </div>

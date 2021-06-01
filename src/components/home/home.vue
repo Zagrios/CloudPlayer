@@ -52,17 +52,17 @@ export default {
                 data
             }).then((response) => {
                 var data = response.data;
-                if(response && response.status && response.status == 200 && data && data.status == 0 && data.tracks && data.tracks.length > 0)
-                {
-                    this.$store.state.tracks = data.tracks.sort(this.$func.compareName);
+                if(response && response.status && response.status == 200 && data && data.status == 0 && data.tracks && data.tracks.length > 0){
+                    this.$store.state.tracks = data.tracks.sort(this.$func.compareName); return;
                 }
+                this.$store.state.tracks = Array();
             });
         }
     },
     beforeCreate(){
       if(this.$store.getters.getToken == null || this.$store.getters.getUserName == null){this.$router.push({path:"/"});}
     },
-    mounted(){
+    created(){
         this.loadTracks();
     },
     
