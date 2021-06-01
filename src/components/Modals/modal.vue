@@ -2,7 +2,7 @@
 	<div class="modal" v-if="visible">
 		<span id="background" @click="closeModal"></span>
 		<upload v-if="type == 'upload'" v-on:close="closeModal"></upload>
-		<deleteTrack v-if="type == 'deleteTrack'" v-bind:track="this.passData" v-on:close="closeModal"></deleteTrack>
+		<deleteTrack v-if="type == 'deleteTrack'" v-bind:track="passData" v-on:close="closeModal"></deleteTrack>
 	</div>
 </template>
 
@@ -10,7 +10,6 @@
 
 import upload from './modalType/upload.vue'
 import deleteTrack from './modalType/deleteTrack.vue'
-import { EventBus } from '@/event-bus.js'
 
 export default {
 	name:'modal',
@@ -38,7 +37,7 @@ export default {
 		deleteTrack,
 	},
 	created(){
-		EventBus.$on('openModal', (data) => {
+		this.EventBus.on('openModal', (data) => {
 			this.openModal(data);
 		})
 	}

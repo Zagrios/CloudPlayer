@@ -1,21 +1,18 @@
-import Vue from 'vue'
+import { createApp } from 'vue';
 import App from './App.vue'
 import store from "./store"
-import VueRouter from "vue-router"
-import routes from './routes'
+import router from './routes'
 import {func} from './func'
+import mitt from 'mitt';
 
-Vue.config.productionTip = false
-Vue.prototype.$func = func
 
-Vue.use(VueRouter)
-const router = new VueRouter({
-	routes: routes,
-	mode: 'history',
-})
+const app = createApp(App);
+const EventBus = mitt();
+app.use(router);
+app.use(store);
 
-new Vue({
-	store:store,
-	router:router,
-	render: h => h(App),
-}).$mount('#app')
+app.config.globalProperties.$func = func;
+app.config.globalProperties.EventBus = EventBus;
+
+app.mount("#app");
+

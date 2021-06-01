@@ -6,7 +6,7 @@
                 <input v-model="searchString" type="text" placeholder="Rechercher ...">
             </span>
             <span id="create-btn">
-                <b-icon-plus id="create-icon"/>
+                <BIconPlus id="create-icon"/>
                 <span>Créer</span>
             </span>
         </div>
@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import {BIconPlus} from 'bootstrap-vue';
 import axios from "axios";
+import { BIconPlus } from 'bootstrap-icons-vue';
 
 export default {
     name:'playlists',
@@ -25,7 +25,6 @@ export default {
 			searchString: "",
 		}
 	},
-	components:{BIconPlus},
 	created(){
 		if(this.$store.getters.getPlaylists){return;}
 		var token = this.$store.getters.getToken;
@@ -40,6 +39,7 @@ export default {
 			}
 		});
 	},
+    components:{ BIconPlus },
 }
 </script>
 

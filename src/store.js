@@ -1,16 +1,18 @@
-import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
+const store = Vuex.createStore({
 	state: {
 		token: null,
 		username: null,
 		isLoad: false,
 		currentPlaying: null,
-		tracks:null,
+		tracks:Array(),
 		playlists:null,
+	},
+	mutations:{
+		setTracks(state, tracks){
+			state.tracks = tracks;
+		},
 	},
 	getters:{
 		getToken: state => {return state.token;},

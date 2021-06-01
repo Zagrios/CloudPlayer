@@ -2,11 +2,11 @@
     <div id="player">
         <div id="range-wrapper">
             <span class="range-fill" v-bind:style="{width:rangeValue/10+'%'}"></span>
-            <input v-model="rangeValue" type="range" name="timeline" id="timeline" min="0" max="1000" step="1" value="500">
+            <input type="range" name="timeline" id="timeline" min="0" max="1000" step="1" v-model="rangeValue">
         </div>
         <div id="elements">
             <div id="track">
-                <img id="track-image" src="@/assets/defaultTrack.png" alt="" srcset="">
+                <img id="track-image" src="@/assets/defaultTrack.webp" alt="" srcset="">
                 <div id="info-wrapper">
                     <span id="title">Titre</span>
                     <span id="artist">Artist</span>
@@ -16,24 +16,24 @@
             
             <div id="controls">
                 <div id="controls-wrapper">
-                    <b-icon-shuffle class="control font-fourth" @click="shuffle = !shuffle" :class="{active: shuffle}"/>
-                    <b-icon-skip-start-fill class="control font-second"/>
-                    <b-icon-play-fill class="control font-main" v-if="playing" @click="playing = !playing"/>
-                    <b-icon-pause-fill class="control font-main" v-else @click="playing = !playing" />
-                    <b-icon-skip-end-fill class="control font-second"/>
-                    <b-icon-arrow-repeat class="control font-third" @click="loop = !loop" :class="{active: loop}"/>
+                    <BIconShuffle class="control font-fourth" @click="shuffle = !shuffle" :class="{active: shuffle}"/>
+                    <BIconSkipStartFill class="control font-second"/>
+                    <BIconPlayFill class="control font-main" v-if="playing" @click="playing = !playing"/>
+                    <BIconPauseFill class="control font-main" v-else @click="playing = !playing" />
+                    <BIconSkipEndFill class="control font-second"/>
+                    <BIconArrowRepeat class="control font-third" @click="loop = !loop" :class="{active: loop}"/>
                 </div>
                 
             </div>
             <div id="volume">
                 <div id="volume-wrapper">
                     <div class="duration">00:00 / 00:00</div>
-                    <b-icon-volume-mute-fill class="control" v-if="volume == 0" @click="volume = tempVolume"/>
-                    <b-icon-volume-down-fill class="control" v-else-if="volume < 75" @click="tempVolume = volume ;volume = 0"/>
-                    <b-icon-volume-up-fill class="control" v-else @click="tempVolume = volume ;volume = 0"/>
+                    <BIconVolumeMuteFill class="control" v-if="volume == 0" @click="volume = tempVolume"/>
+                    <BIconVolumeDownFill class="control" v-else-if="volume < 75" @click="tempVolume = volume ;volume = 0"/>
+                    <BIconVolumeUpFill class="control" v-else @click="tempVolume = volume ;volume = 0"/>
                     <div id="range-volume-wrapper">
                         <span class="range-fill" v-bind:style="{width:volume+'%'}"></span>
-                        <input v-model="volume" type="range" name="volume" id="volume-range" min="0" max="100" step="1" value="50">
+                        <input type="range" name="volume" id="volume-range" min="0" max="100" step="1" v-model="volume">
                     </div>
                 </div>
                 
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import {BIconPlayFill, BIconPauseFill, BIconSkipEndFill, BIconSkipStartFill, BIconShuffle, BIconArrowRepeat, BIconVolumeDownFill, BIconVolumeMuteFill, BIconVolumeUpFill} from 'bootstrap-vue';
+import { BIconShuffle, BIconSkipStartFill, BIconPlayFill, BIconPauseFill, BIconSkipEndFill, BIconArrowRepeat, BIconVolumeMuteFill, BIconVolumeDownFill, BIconVolumeUpFill } from 'bootstrap-icons-vue';
 
 export default {
     data(){
@@ -56,19 +56,7 @@ export default {
             tempVolume: 0,
         }
     },
-    methods:{
-    },
-    components:{
-        BIconPlayFill,
-        BIconPauseFill,
-        BIconSkipEndFill,
-        BIconSkipStartFill,
-        BIconShuffle,
-        BIconArrowRepeat,
-        BIconVolumeMuteFill,
-        BIconVolumeDownFill,
-        BIconVolumeUpFill,
-    },
+    components:{BIconShuffle, BIconSkipStartFill, BIconPlayFill, BIconPauseFill, BIconSkipEndFill, BIconArrowRepeat, BIconVolumeMuteFill, BIconVolumeDownFill, BIconVolumeUpFill},
 }
 </script>
 

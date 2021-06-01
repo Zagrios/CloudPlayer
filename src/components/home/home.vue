@@ -53,9 +53,9 @@ export default {
             }).then((response) => {
                 var data = response.data;
                 if(response && response.status && response.status == 200 && data && data.status == 0 && data.tracks && data.tracks.length > 0){
-                    this.$store.state.tracks = data.tracks.sort(this.$func.compareName); return;
+                    this.$store.commit('setTracks', data.tracks.sort(this.$func.compareName));return;
                 }
-                this.$store.state.tracks = Array();
+                this.$store.commit('setTracks', Array());
             });
         }
     },

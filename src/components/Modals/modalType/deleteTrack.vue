@@ -2,10 +2,10 @@
     <div id="delete-track">
         <div id="head">
             <span>Supprimer ?</span>
-            <span id="error-msg" v-if="this.error">Une erreur est survenue</span>
+            <span id="error-msg" v-if="error">Une erreur est survenue</span>
         </div>
         <div class="track-wrapper">   
-            <span v-if="!this.deleting" class="track">Voulez vous vraiment supprimer {{track.title}} ? Cette opération ne peut pas être annulé.</span>
+            <span v-if="!deleting" class="track">Voulez vous vraiment supprimer {{track.title}} ? Cette opération ne peut pas être annulé.</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
         <div id="bottom">

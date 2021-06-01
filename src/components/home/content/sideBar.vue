@@ -3,55 +3,55 @@
       <div id="bar" class="expanded" v-bind:class="{expand: expanded}">
           <div id="element-wrapper">
                 <div class="element" v-bind:class="{expand: expanded}" @click="expanded = !expanded">
-                    <b-icon-list class="icon"></b-icon-list>
+                    <BIconList class="icon"/>
                     <span>CloudPlayer</span>
                 </div>
 
                 <hr class="spacer">
 
                 <div class="element" v-bind:class="{expand: expanded}">
-                    <b-icon-person class="icon"></b-icon-person>
+                    <BIconPerson class="icon"/>
                     <span>Profil</span>
                 </div>
 
                 <hr class="spacer">
 
                 <div class="element" :key="updateKey" v-bind:class="{expand: expanded, highlight:checkPath('/home/tracks')}" @click="changePath('/home/tracks')">
-                    <b-icon-music-note-beamed class="icon"></b-icon-music-note-beamed>
+                    <BIconMusicNoteBeamed class="icon"/>
                     <span>Musiques</span>
                 </div>
 
-                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/favorites')}" @click="changePath('/home/playlists')">
-                    <b-icon-music-note-list class="icon"></b-icon-music-note-list>
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/playlists')}" @click="changePath('/home/playlists')">
+                    <BIconMusicNoteList class="icon"/>
                     <span>Playlists</span>
                 </div>
 
                 <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/favorites')}" @click="changePath('/home/favorites')">
-                    <b-icon-heart class="icon"></b-icon-heart>
+                    <BIconHeart class="icon"/>
                     <span>Favoris</span>
                 </div>
                 
                 <div class="element" v-bind:class="{expand: expanded}">
-                    <b-icon-music-note class="icon"></b-icon-music-note>
+                    <BIconMusicNote class="icon"/>
                     <span>Artistes</span>
                 </div>
 
                 <div class="element" v-bind:class="{expand: expanded}">
-                    <b-icon-disc class="icon"></b-icon-disc>
+                    <BIconDisc class="icon"/>
                     <span>Albums</span>
                 </div>
 
                 <hr class="spacer">
 
                 <div class="element" v-bind:class="{expand: expanded}">
-                    <b-icon-gear class="icon"></b-icon-gear>
+                    <BIconGear class="icon"/>
                     <span>Options</span>
                 </div>
 
                 <hr class="spacer">
 
                 <div class="element" v-bind:class="{expand: expanded}" @click="logOut()">
-                    <b-icon-box-arrow-left class="icon"></b-icon-box-arrow-left>
+                    <BIconBoxArrowLeft class="icon"/>
                     <span>Déconnexion</span>
                 </div>
           </div>
@@ -60,8 +60,7 @@
 </template>
 
 <script>
-
-import {BIconList, BIconPerson, BIconMusicNote, BIconHeart, BIconMusicNoteList, BIconDisc, BIconMusicNoteBeamed, BIconGear, BIconBoxArrowLeft} from 'bootstrap-vue';
+import {BIconList, BIconPerson, BIconMusicNoteBeamed, BIconMusicNoteList, BIconHeart, BIconMusicNote, BIconDisc, BIconGear, BIconBoxArrowLeft} from 'bootstrap-icons-vue';
 
 export default {
     data(){
@@ -78,20 +77,10 @@ export default {
             if(path != this.$router.currentRoute.path){this.$router.push({path:path}); this.updateKey++;}
         },
         checkPath: function(path) {
-            return path == this.$router.currentRoute.path ? true : false;
+            return path == this.$route.path ? true : false;
         }
     },
-    components:{
-        BIconList,
-        BIconPerson,
-        BIconMusicNote,
-        BIconHeart,
-        BIconMusicNoteList,
-        BIconDisc,
-        BIconMusicNoteBeamed,
-        BIconGear,
-        BIconBoxArrowLeft,
-    }
+    components:{BIconList, BIconPerson, BIconMusicNoteBeamed, BIconMusicNoteList, BIconHeart, BIconMusicNote, BIconDisc, BIconGear, BIconBoxArrowLeft},
 }
 </script>
 
@@ -150,6 +139,7 @@ export default {
                 }
 
                 .icon{
+                    fill: white;
                     height: 25px;
                     width: 25px;
                     margin-left: 10px;

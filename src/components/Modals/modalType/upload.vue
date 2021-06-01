@@ -8,7 +8,7 @@
 			<form id="form">
 				<input type="file" id="files" multiple accept="audio/*" @change="saveFiles" />
 				<span id="note">
-					<b-icon-download v-if="!uploading" class="icon" />
+					<BIconDownload v-if="!uploading" class="icon"/>
 					<div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 					<span v-if="!uploading">Glisser-déposer vos musiques</span>
 					<span class="progress" v-else><span v-bind:style="{ width:this.uploadPercent+'%' }"></span></span>
@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import { BIconDownload } from "bootstrap-vue";
 import axios from "axios";
+import { BIconDownload } from 'bootstrap-icons-vue';
 
 export default {
 	name: "upload",
@@ -37,9 +37,6 @@ export default {
 			error : false,
 			errorMsg: "test",
 		};
-	},
-	components: {
-		BIconDownload,
 	},
 	methods: {
 		setProgressBar: function(percent){
@@ -110,6 +107,7 @@ export default {
 			});
 		}
 	},
+	components:{BIconDownload},
 };
 </script>
 

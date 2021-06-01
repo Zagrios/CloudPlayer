@@ -2,24 +2,26 @@
     <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="track">
             <img :src="getImg()" :key="refreshToken"/>
-            <span class="info-btn" @click="switchInfoOpen"><b-icon-info/></span>
+            <span class="info-btn" @click="switchInfoOpen">
+                <BIconInfo/>
+            </span>
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
-                    <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle}}</span></span>
-                    <span class="fav-btn" v-if="!info && this.track.isFav == false" @click="setFav(true)"><b-icon-heart/></span>
-                    <span class="fav-btn" v-else-if="!info && this.track.isFav == true" @click="setFav(false)"><b-icon-heart-fill/></span>
-                    <span class="fav-btn" v-else @click="switchInfoOpen"><b-icon-x-circle-fill/></span>
+                    <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle()}}</span></span>
+                    <span class="fav-btn" v-if="!info && track.isFav == false" @click="setFav(true)"> <BIconHeart/> </span>
+                    <span class="fav-btn" v-else-if="!info && track.isFav == true" @click="setFav(false)"> <BIconHeartFill/> </span>
+                    <span class="fav-btn" v-else @click="switchInfoOpen"> <BIconXCircleFill/> </span>
                 </div>
                 <div class="info-wrapper">
                     <span>Artiste : {{getArtist()}}</span>
                     <span>Album : {{getAlbum()}}</span>
-                    <span>Qualité : {{ this.track.type.toUpperCase()}}</span>
-                    <span>Durée : {{this.track.duration}}</span>
-                    <span>Taille : {{this.track.size}}Mo</span>
+                    <span>Qualité : {{ track.type.toUpperCase()}}</span>
+                    <span>Durée : {{track.duration}}</span>
+                    <span>Taille : {{track.size}}Mo</span>
                 </div>
                 <div class="actions">
-                        <span class="download" title="Télécharger" @click="download"><b-icon-download/></span>
-                        <span class="delete" title="Supprimer" @click="openDeleteTrackModal"><b-icon-trash/></span>
+                        <span class="download" title="Télécharger" @click="download"> <BIconDownload/> </span>
+                        <span class="delete" title="Supprimer" @click="openDeleteTrackModal"> <BIconTrash/> </span>
                 </div>
             </div>
         </div>
@@ -28,8 +30,7 @@
 
 <script>
 import axios from "axios";
-import { EventBus } from '@/event-bus.js';
-import {BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash} from 'bootstrap-vue';
+import { BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash } from 'bootstrap-icons-vue';
 
 export default {
     name:'trackItem',
@@ -38,6 +39,7 @@ export default {
             refreshToken:0,
             info:false,
             slideTitle:false,
+            track: this.trackP,
         }
     },
     methods:{
@@ -48,11 +50,11 @@ export default {
             window.open("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);
         },
         openDeleteTrackModal:function(){
-            EventBus.$emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle}});
+            this.EventBus.emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle()}});
         },
         getImg: function(){
             if(this.track.img && this.track.img != ""){return this.track.img;}
-            else{return require("@/assets/defaultTrack.png")}
+            else{return require("@/assets/defaultTrack.webp")}
         },
         getArtist: function(){
             if(this.track.artist && this.track.artist != ""){return this.track.artist;}
@@ -81,17 +83,13 @@ export default {
                 if(response.status == 200 && response.data == 0){ this.track.isFav = fav; }
             });
         },
-        switchInfoOpen:function(){ this.info = !this.info; },
-    },
-    computed:{
         getTitle(){
             if(this.track.title && this.track.title != ""){return this.track.title;}
             else{return this.track.filename;}
         },
+        switchInfoOpen:function(){ this.info = !this.info; },
     },
-    props:{
-		track:Object(),
-	},
+    props:['trackP'],
     mounted(){
         if(this.track.img != null){return}
         var token = this.$store.getters.getToken;
@@ -109,7 +107,7 @@ export default {
 		});
     },
     components:{
-        BIconInfo, BIconHeart,BIconXCircleFill, BIconDownload, BIconTrash, BIconHeartFill,
+        BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash,
     }
 }
 </script>
@@ -256,11 +254,11 @@ export default {
                     height: 100%;
                     margin: 0;
                     padding: 0;
-                    font-size: 1.2em;
+                    font-size: 1.3em;
                     transition: background-color .1s ease;
                     &:hover{background-color: rgba(0, 0, 0, 0.329);}
                 }
-            }
+        }
     }
 }
 

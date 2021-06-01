@@ -6,7 +6,7 @@
                 <input v-model="searchString" @keyup="search" type="text" placeholder="Rechercher ...">
             </span>
             <span id="upload-btn" @click="openModal">
-                <b-icon-cloud-arrow-up id="up-icon"/>
+                <BIconCloudArrowUp/>
                 <span>Ajouter</span>
             </span>
         </div>
@@ -16,9 +16,8 @@
 
 <script>
 
-import {BIconCloudArrowUp} from 'bootstrap-vue';
 import tracksList from '../fragments/tracks/tracksList.vue';
-import { EventBus } from '@/event-bus.js'
+import {BIconCloudArrowUp} from 'bootstrap-icons-vue';
 
 export default {
     data(){
@@ -33,12 +32,15 @@ export default {
     },
     methods:{
         openModal : function(){
-            EventBus.$emit('openModal', {type:'upload'});
+            this.EventBus.emit('openModal', {type:'upload'});
         },
         search:function(){
             if(!this.searchString){ this.$store.state.tracks = this.$store.state.tracks.sort(this.$func.compareName); }
             else{ this.$store.state.tracks = this.$func.sortArrayBySearch(this.$store.state.tracks, this.searchString); }
         }
+    },
+    mounted(){
+        console.log(this.$store.getters.getTracks);
     },
     
 }
@@ -98,7 +100,7 @@ export default {
             span{
                 font-size: 0.83em;
             }
-            #up-icon{
+            svg{
                 margin-right: 7px;
                 font-size: 1.15em;
             }

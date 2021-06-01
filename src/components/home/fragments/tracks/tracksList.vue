@@ -1,7 +1,7 @@
 <template>
 	<div id="track-list">
 		<div id="wrapper">
-			<trackItem v-for="(track) in this.tracks" v-bind:key="track.id" :track="track"></trackItem>
+			<trackItem v-for="(track) in tracks" v-bind:key="track.id" :trackP="track"></trackItem>
 		</div>
 	</div>
 </template>
@@ -11,9 +11,7 @@ import trackItem from "./trackItem";
 
 export default {
     name:'tracksList',
-    props:{
-        tracks:Object(),
-    },
+    props:{tracks: Object()},
     components:{
         trackItem,
     }
