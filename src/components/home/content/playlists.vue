@@ -5,7 +5,7 @@
             <span id="search-bar">
                 <input v-model="searchString" type="text" placeholder="Rechercher ...">
             </span>
-            <span id="create-btn">
+            <span id="create-btn" @click="openModal">
                 <BIconPlus id="create-icon"/>
                 <span>Créer</span>
             </span>
@@ -25,6 +25,11 @@ export default {
 			searchString: "",
 		}
 	},
+    methods:{
+        openModal: function(){
+            this.EventBus.emit('openModal', {type: 'createPlaylist'});
+        }
+    },
 	created(){
 		if(this.$store.getters.getPlaylists){return;}
 		var token = this.$store.getters.getToken;

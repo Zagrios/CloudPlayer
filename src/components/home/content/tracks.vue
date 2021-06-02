@@ -39,9 +39,6 @@ export default {
             else{ this.$store.state.tracks = this.$func.sortArrayBySearch(this.$store.state.tracks, this.searchString); }
         }
     },
-    mounted(){
-        console.log(this.$store.getters.getTracks);
-    },
     
 }
 </script>

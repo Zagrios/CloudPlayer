@@ -11,7 +11,7 @@
         <div id="bottom">
 			<span class="btn" id="cancelBtn" @click="$emit('close')">Annuler</span>
 			<span class="btn" id="delBtn" @click="deleteTrack">Supprimer</span>
-		</div>
+        </div>
   </div>
 </template>
 
@@ -62,11 +62,11 @@ export default {
 #delete-track{
     z-index: 1;
     width: 650px;
-	margin-bottom: 50px;
+    margin-bottom: 50px;
     background-color: #212121;
     color: white;
     border: solid black 0;
-	border-radius: 5px;
+    border-radius: 5px;
     #head {
 		display: flex;
 		align-content: center;
@@ -122,15 +122,11 @@ export default {
 		}
 		#cancelBtn {
 			border: solid #C1C1C1 1px;
-			&:hover {
-				background-color: #C1C1C1;
-			}
+			&:hover { background-color: #C1C1C1; }
 		}
 		#delBtn {
 			border: solid crimson 1px;
-			&:hover {
-				background-color: crimson;
-			}
+			&:hover { background-color: crimson; }
 		}
 	}
 }
