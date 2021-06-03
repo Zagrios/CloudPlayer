@@ -31,7 +31,7 @@ export default {
         }
     },
 	created(){
-		if(this.$store.getters.getPlaylists){return;}
+		if(this.$store.getters.getPlaylists.length > 0){return;}
 		var token = this.$store.getters.getToken;
 		axios({
 			method: "GET",
@@ -41,6 +41,7 @@ export default {
             var res = response.data;
 			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
 				console.log(res.playlists);
+                this.$store.commit('setPlaylists', res.playlists);
 			}
 		});
 	},

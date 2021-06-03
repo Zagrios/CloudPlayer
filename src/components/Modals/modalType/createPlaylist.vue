@@ -37,6 +37,8 @@ export default {
 	},
 	methods:{
 		createPlaylist: function(){
+			this.error = false;
+			this.errMessage = "";
 			if(this.name.length <= 1){this.error = true; this.errMessage = "Le nom de la playlist est trop court"; return;}
 			var data = new FormData();
 			data.append('token', this.$store.getters.getToken);
@@ -46,10 +48,16 @@ export default {
 				console.log(response);
 				var data = response.data;
 				if(response.status == 200 && data.status == 0){
-					console.log("oui");
+					this.$store.commit('addPlaylist', data.playlist);
+					console.log(this.$store.getters.getPlaylists);
+					this.$emit('close');
 				}
 				else{
-					console.log("non");
+					if(data.status == 2){ this.errMessage = "Le nom est trop court"; }
+					else if(data.status == 3){ this.errMessage = "Le nom est trop long"; }
+					else if(data.status == 4){ this.errMessage = "La playlist existe déjà"; }
+					else{ this.errMessage = "Une erreur est survenue" }
+					this.error = true;
 				}
 			});
 		},

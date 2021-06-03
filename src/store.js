@@ -7,12 +7,12 @@ const store = Vuex.createStore({
 		isLoad: false,
 		currentPlaying: null,
 		tracks:Array(),
-		playlists:null,
+		playlists:Array(),
 	},
 	mutations:{
-		setTracks(state, tracks){
-			state.tracks = tracks;
-		},
+		setTracks(state, tracks){ state.tracks = tracks; },
+		setPlaylists(state, playlists){ state.playlists = playlists; },
+		addPlaylist(state, playlist){ state.playlists.push(playlist); },
 	},
 	getters:{
 		getToken: state => {return state.token;},

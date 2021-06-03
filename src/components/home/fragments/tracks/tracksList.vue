@@ -11,7 +11,7 @@ import trackItem from "./trackItem";
 
 export default {
     name:'tracksList',
-    props:{tracks: Object()},
+    props:['tracks'],
     components:{
         trackItem,
     }
