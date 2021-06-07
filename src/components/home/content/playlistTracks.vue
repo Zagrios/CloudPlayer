@@ -1,58 +1,52 @@
 <template>
-	<div id="playlists-page">
+	<div id="playlistsTrack-page">
         <div id="nav-bar">
-            <h1>Playlists</h1>
+            <h1>{{ playlist.name }}</h1>
             <span id="search-bar">
                 <input v-model="searchString" type="text" placeholder="Rechercher ...">
             </span>
             <span id="create-btn" @click="openModal">
-                <BIconPlus id="create-icon"/>
-                <span>Créer</span>
+                <BIconPencilFill id="create-icon"/>
+                <span>Editer</span>
             </span>
         </div>
-        <playlistList :playlists="this.$store.getters.getPlaylists" />
+		<tracksList v-bind:tracks="this.playlist.tracks" :isPlaylistItem="true"></tracksList>
     </div>
 </template>
 
 <script>
-import axios from "axios";
-import { BIconPlus } from 'bootstrap-icons-vue';
-import playlistList from '../fragments/playlists/playlistList.vue'
+import { BIconPencilFill } from 'bootstrap-icons-vue';
+import tracksList from '../fragments/tracks/tracksList.vue';
 
 export default {
-    name:'playlists',
 	data(){
 		return{
 			searchString: "",
+			playlist: Object(),
 		}
 	},
     methods:{
         openModal: function(){
             this.EventBus.emit('openModal', {type: 'createPlaylist'});
-        },
+        }
     },
-	created(){
-		if(this.$store.getters.getPlaylists.length > 0){return;}
-		var token = this.$store.getters.getToken;
-		axios({
-			method: "GET",
-			url: "http://localhost/cloudmusic_back/user/actions/getPlaylists.php?token="+token,
-		}).then((response) => {
-			console.log(response);
-            var res = response.data;
-			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
-				console.log(res.playlists);
-                this.$store.commit('setPlaylists', res.playlists);
-			}
-		});
+    components:{ BIconPencilFill, tracksList },
+	mounted(){
+		var playlists = this.$store.getters.getPlaylists;
+		var l = playlists.length;
+		var routename = this.$route.params.name;
+		console.log(routename+" "+l);
+		for(var i = 0; i < l; i++){
+			if(playlists[i].name == routename){this.playlist = playlists[i]; return;}
+		}
+		
 	},
-    components:{ BIconPlus, playlistList },
 }
 </script>
 
 <style lang='scss'>
 
-#playlists-page{
+#playlistsTrack-page{
     width: 100%;
     height: 100%;
     #nav-bar{
@@ -107,7 +101,7 @@ export default {
             }
             #create-icon{
                 margin-right: 5px;
-                font-size: 1.4em;
+                font-size: .8em;
             }
             &:hover{
                 background-color: #202020;

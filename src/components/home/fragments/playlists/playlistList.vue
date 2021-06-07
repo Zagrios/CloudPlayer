@@ -1,35 +1,41 @@
 <template>
-	<div id="track-list">
+	<div id="playlist-list">
 		<div id="wrapper">
-			<trackItem v-for="(track) in tracks" v-bind:key="track.id" :trackP="track" :isPlaylistItem="isPlaylistItem"></trackItem>
+			<playlistItem v-for="(playlist) in playlists" v-bind:key="playlist.id" :playlistP="playlist" v-on:openFolder="openPlaylist"></playlistItem>
 		</div>
 	</div>
 </template>
 
 <script>
-import trackItem from "./trackItem";
+import playlistItem from './playlistItem.vue';
 
 export default {
-    name:'tracksList',
-    props:{tracks:Object(), isPlaylistItem:{type:Boolean, default:false}},
-    components:{
-        trackItem,
+    name:'playlistList',
+    props:['playlists'],
+    methods:{
+      openPlaylist:function(playlist){
+        console.log(playlist);
+        this.$router.push("/home/playlists/"+playlist.name);
+      },
     },
-    created(){
-      console.log(this.tracks);
-    }
+    components:{
+        playlistItem,
+    },
+	created(){
+		console.log(this.playlists);
+	}
 }
 </script>
 
 <style lang='scss' scoped>
 
-#track-list{
+#playlist-list{
     width: 100%;
     max-height: calc(100% - 75px);
     height: calc(100% - 75px);
     overflow-y: scroll;
 	#wrapper{
-    width: fit-content;
+		width: fit-content;
 		display: flex;
 		flex-flow: row wrap;
 		overflow-x: hidden;

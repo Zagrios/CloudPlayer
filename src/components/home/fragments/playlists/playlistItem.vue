@@ -1,23 +1,21 @@
 <template>
-    <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
-        <div class="track">
-            <img :src="getImg()" :key="refreshToken"/>
+	<div class="playlist-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
+        <div class="playlist">
+            <img :src="getImg" @click="test"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
-                    <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{getTitle()}}</span></span>
-                    <span class="fav-btn" v-if="!info && track.isFav == false" @click="setFav(true)"> <BIconHeart/> </span>
-                    <span class="fav-btn" v-else-if="!info && track.isFav == true" @click="setFav(false)"> <BIconHeartFill/> </span>
-                    <span class="fav-btn" v-else @click="switchInfoOpen"> <BIconXCircleFill/> </span>
+					<BIconPlayFill class="play-btn"/>
+                    <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{playlist.name}}</span></span>
                 </div>
                 <div class="info-wrapper">
-                    <span>Artiste : {{getArtist()}}</span>
-                    <span>Album : {{getAlbum()}}</span>
-                    <span>Qualité : {{ track.type.toUpperCase()}}</span>
-                    <span>Durée : {{track.duration}}</span>
-                    <span>Taille : {{track.size}}Mo</span>
+                    <span>Artiste : </span>
+                    <span>Album : </span>
+                    <span>Qualité : </span>
+                    <span>Durée : </span>
+                    <span>Taille : Mo</span>
                 </div>
                 <div class="actions">
                         <span class="download" title="Télécharger" @click="download"> <BIconDownload/> </span>
@@ -29,94 +27,62 @@
 </template>
 
 <script>
-import axios from "axios";
-import { BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash } from 'bootstrap-icons-vue';
+import { BIconInfo, BIconDownload, BIconTrash, BIconPlayFill } from 'bootstrap-icons-vue';
 
 export default {
-    name:'trackItem',
-    data(){
-        return{
-            refreshToken:0,
-            info:false,
-            slideTitle:false,
-            track: this.trackP,
-        }
-    },
-    methods:{
-        download: function(){
-            this.switchInfoOpen();
-            var token = this.$store.getters.getToken;
-            var trackId = this.track.id;
-            window.open("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);
-        },
-        openDeleteTrackModal:function(){
-            if(!this.isPlaylistItem){this.EventBus.emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle()}}); return;}
-        },
-        getImg: function(){
-            if(this.track.img && this.track.img != ""){return this.track.img;}
-            else{return require("@/assets/defaultTrack.webp")}
-        },
-        getArtist: function(){
-            if(this.track.artist && this.track.artist != ""){return this.track.artist;}
-            else{return "Inconnu";}
-        },
-        getAlbum: function(){
-            if(this.track.album && this.track.album != ""){return this.track.album;}
-            else{return "Inconnu";}
-        },
-        hoverAction:function()
-        {
+	data(){
+		return{
+			slideTitle: false,
+			info: false,
+			playlist: this.playlistP,
+		}
+	},
+	methods:{
+		hoverAction:function(){
             if(this.isTitleOverflowing()){ this.slideTitle = true;}
         },
-        isTitleOverflowing: function() {
+		isTitleOverflowing: function() {
             var element = this.$refs.titleText;
             return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
         },
-        setFav: function(fav){
-            var token = this.$store.getters.getToken;
-            var trackId = this.track.id;
-            var data = new FormData();
-            data.append("token", token);
-            data.append("trackId", trackId);
-            data.append("fav",fav);
-            axios.post('http://localhost/cloudmusic_back/user/actions/setTrackFav.php', data).then((response) => {
-                if(response.status == 200 && response.data == 0){ this.track.isFav = fav; }
-            });
-        },
-        getTitle(){
-            if(this.track.title && this.track.title != ""){return this.track.title;}
-            else{return this.track.filename;}
-        },
-        switchInfoOpen:function(){ this.info = !this.info; },
-    },
-    props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}},
-    mounted(){
-        console.log(this.isPlaylistItem)
-        if(this.track.img != null){return}
-        var token = this.$store.getters.getToken;
-        var trackId = this.track.id;
-        axios({
-			method: "GET",
-			url: "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+token+"&trackId="+trackId,
-		}).then((response) => {
-            var res = response.data;
-			if (response.status == 200 && res.status == 0) 
-			{
-                this.track.img = res.img;
-                this.refreshToken++;
+        test:function(){
+            this.$emit('openFolder', this.playlist)
+        }
+	},
+	computed:{
+		getImg:function(){
+			if(!this.playlist.tracks){return require("@/assets/defaultTrack.webp");}
+			var l = this.playlist.tracks.length;
+			for(var i = 0; i < l; i++){
+				if(this.playlist.tracks[i].img && this.playlist.tracks[i].img != ""){ return this.playlist.tracks[i].img; } 
 			}
-		});
-    },
-    components:{
-        BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash,
-    }
+			return require("@/assets/defaultTrack.webp");
+		}
+	},
+	props:['playlistP'],
+	beforeMount(){
+		if(!this.playlist.tracks){return;}
+        if(this.playlist.tracks[0].filename){return;}
+		var len = this.playlist.tracks.length;
+		var globalTracks = this.$store.getters.getTracks;
+		var globalLen = globalTracks.length;
+        var finalTracks = Array();
+		for(var i = 0; i < len; i++){
+			var trackId = this.playlist.tracks[i];
+			for(var j = 0; j < globalLen; j++){
+				if(trackId == globalTracks[j].id){finalTracks.push(globalTracks[j])}
+			}
+		}
+        this.playlist.tracks = finalTracks;
+	},
+	components:{ BIconInfo, BIconDownload, BIconTrash, BIconPlayFill }
 }
 </script>
 
 <style lang='scss' scoped>
 
-.track-wrapper{
-    width: 220px;
+.playlist-wrapper{
+	width: 220px;
     height: 220px;
     max-height: 220px;
     max-width: 220px;
@@ -124,7 +90,7 @@ export default {
     align-items: center;
     align-content: center;
     justify-content: center;
-    .track{
+    .playlist{
         overflow: hidden;
         width: 200px;
         height: 200px;
@@ -148,7 +114,7 @@ export default {
     }
 }
 
-.track{
+.playlist{
     .info-btn{
         width: 20px;
         height: 20px;
@@ -160,16 +126,15 @@ export default {
         border-radius: 100%;
         display: flex;
         align-content: center;
-        align-items: center;
         justify-content: center;
-        color: white;
         font-size: 1.1em;
         cursor: pointer;
         &:hover{
             backdrop-filter: blur(20px) brightness(30%);
         }
     }
-    .info-display{
+
+	.info-display{
         position: absolute;
         display: flex;
         justify-content: space-between;
@@ -179,12 +144,16 @@ export default {
         backdrop-filter: blur(10px) brightness(75%);
         .head{
             position: relative;
-            height: 10%;
+            height: 20%;
             width: 100%;
             display: flex;
             align-items: center;
             align-content: center;
             justify-content: space-between;
+			.play-btn{
+				font-size: 2.5em;
+				cursor: pointer;
+			}
             .title{
                 position: relative;
                 overflow: hidden;
@@ -197,10 +166,13 @@ export default {
                     white-space: nowrap;
                     text-overflow: clip;
                     position: absolute;
+					display: flex;
+					align-content: center;
+					align-items: center;
                     height: 100%;
                 }
                 .slide{
-                    transform: translateX(calc(-100% + 187px));
+                    transform: translateX(calc(-100% + 168px));
                     transition: all 1s linear;
                 }
             }
@@ -263,13 +235,14 @@ export default {
     }
 }
 
+
 .open{
     top: 0;
     transition: all .2s ease;
 }
 
 .closed{
-    top: 90%;
+    top: 80%;
     transition: all .2s ease;
 }
 

@@ -8,7 +8,7 @@
 			<div id="title-wrapper">
 				<div id="title">
 					<span>Nom : </span>
-					<span id="title-input"><input type="text" maxlength="30" placeholder="Nom de la playlist" v-model="name"></span>
+					<span id="title-input"><input type="text" maxlength="20" placeholder="Nom de la playlist" v-model="name"></span>
 				</div>
 			</div>
 			<div id="tracks-wrapper">

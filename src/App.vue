@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<modal></modal>
+		<modal/>
 		<Loader v-if="this.$store.state.isLoad"></Loader>
 		<router-view></router-view>
 	</div>
