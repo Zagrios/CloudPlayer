@@ -1,7 +1,7 @@
 <template>
 	<div class="playlist-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="playlist">
-            <img :src="getImg" @click="test"/>
+            <img :src="getImg" @click="openFolder"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
@@ -9,13 +9,12 @@
                 <div class="head">
 					<BIconPlayFill class="play-btn"/>
                     <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{playlist.name}}</span></span>
+                    <span class="close-btn" v-if="info" @click="switchInfoOpen"><BIconXCircleFill/></span>
                 </div>
                 <div class="info-wrapper">
-                    <span>Artiste : </span>
-                    <span>Album : </span>
-                    <span>Qualité : </span>
-                    <span>Durée : </span>
-                    <span>Taille : Mo</span>
+                    <span>Musiques : {{nbTracks}}</span>
+                    <span>Durée : {{totalLength}}</span>
+                    <span>Taille : {{totalSize}}</span>
                 </div>
                 <div class="actions">
                         <span class="download" title="Télécharger" @click="download"> <BIconDownload/> </span>
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-import { BIconInfo, BIconDownload, BIconTrash, BIconPlayFill } from 'bootstrap-icons-vue';
+import { BIconInfo, BIconDownload, BIconTrash, BIconPlayFill, BIconXCircleFill } from 'bootstrap-icons-vue';
 
 export default {
 	data(){
@@ -45,37 +44,60 @@ export default {
             var element = this.$refs.titleText;
             return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
         },
-        test:function(){
+        openFolder:function(){
             this.$emit('openFolder', this.playlist)
-        }
+        },
+        switchInfoOpen:function(){ this.info = !this.info; },
 	},
 	computed:{
 		getImg:function(){
-			if(!this.playlist.tracks){return require("@/assets/defaultTrack.webp");}
+			if(!this.playlist.tracks || this.playlist.tracks.length <= 0){return require("@/assets/defaultTrack.webp");}
 			var l = this.playlist.tracks.length;
 			for(var i = 0; i < l; i++){
 				if(this.playlist.tracks[i].img && this.playlist.tracks[i].img != ""){ return this.playlist.tracks[i].img; } 
 			}
 			return require("@/assets/defaultTrack.webp");
-		}
+		},
+        nbTracks:function(){
+            return this.playlist.tracks.length;
+        },
+        totalLength:function(){
+            function pad(n, z) { z = z || 2; return ('00' + n).slice(-z); }
+            const conversionTable = {seconds: 1000,minutes: 60*1000,hours: 60*60*1000,days: 24*60*60*1000,};
+            const convertTime = (opts) => Object.keys(opts).reduce((fin, timeKey) => (fin + opts[timeKey] * conversionTable[timeKey]), 0);
+            var totalMs = 0;
+            this.playlist.tracks.forEach(track => {
+                if(track.duration){
+                    var arr = [0, 0, 0];
+                    var times = track.duration.split(':').reverse();
+                    for(var i = 0; i < times.length; i++){ arr[i] = Number(times[i]);}
+                    arr.reverse();
+                    totalMs += convertTime({hours : arr[0], minutes: arr[1], seconds: arr[2]});
+                }
+                
+            });
+            const seconds = Math.floor((totalMs / 1000) % 60);
+            const minutes = Math.floor((totalMs / 1000 / 60) % 60);
+            const hours = Math.floor((totalMs  / 1000 / 3600 ) % 24)
+            var humanized = [pad(hours.toString(), 2), pad(minutes.toString(), 2), pad(seconds.toString(), 2),];
+            humanized = humanized[0] == '00' ? humanized.splice(1, 2).join(':') : humanized.join(':');
+            console.log(this.playlist);
+            return humanized;
+        },
+        totalSize:function(){
+            var totalMo = 0
+            this.playlist.tracks.forEach(track => {
+                totalMo += parseFloat(track.size);
+            })
+            if(totalMo >= 1000){ return Math.round((totalMo / 1000) * 100)/100+"Go"; }
+            return Math.round(totalMo*100)/100+"Mo";
+        }
 	},
 	props:['playlistP'],
 	beforeMount(){
-		if(!this.playlist.tracks){return;}
-        if(this.playlist.tracks[0].filename){return;}
-		var len = this.playlist.tracks.length;
-		var globalTracks = this.$store.getters.getTracks;
-		var globalLen = globalTracks.length;
-        var finalTracks = Array();
-		for(var i = 0; i < len; i++){
-			var trackId = this.playlist.tracks[i];
-			for(var j = 0; j < globalLen; j++){
-				if(trackId == globalTracks[j].id){finalTracks.push(globalTracks[j])}
-			}
-		}
-        this.playlist.tracks = finalTracks;
+        this.$func.asignTrackToPlaylist(this.$store.getters.getTracks, this.playlist);
 	},
-	components:{ BIconInfo, BIconDownload, BIconTrash, BIconPlayFill }
+	components:{ BIconInfo, BIconDownload, BIconTrash, BIconPlayFill, BIconXCircleFill }
 }
 </script>
 
@@ -176,13 +198,14 @@ export default {
                     transition: all 1s linear;
                 }
             }
-            .fav-btn{
-                height: 100%;
+            .close-btn{
+                position: absolute;
+                right: 5px;
+                top: 5px;
                 display: flex;
                 justify-content: center;
                 align-content: center;
                 align-items: center;
-                padding-right: 3px;
                 font-size: .9em;
                 cursor: pointer;
                 transition: all .1s ease;
@@ -192,15 +215,15 @@ export default {
             }
         }
         .info-wrapper{
-            margin-top: 10px;
             width: 100%;
-            height: 125px;
+            height: 80px;
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             font-size: .85em;
             span{
                 max-width: 100%;
+                margin-bottom: 10px;
                 margin-left: 5px;
                 letter-spacing: 1px;
                 text-overflow: ellipsis;

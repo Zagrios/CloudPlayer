@@ -14,16 +14,12 @@ export default {
     props:['playlists'],
     methods:{
       openPlaylist:function(playlist){
-        console.log(playlist);
         this.$router.push("/home/playlists/"+playlist.name);
       },
     },
     components:{
         playlistItem,
     },
-	created(){
-		console.log(this.playlists);
-	}
 }
 </script>
 

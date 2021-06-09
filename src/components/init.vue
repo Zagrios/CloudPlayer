@@ -46,7 +46,6 @@ export default {
 				}
 				else
 				{
-					console.log("erreur")
 					this.$store.state.token = null;
 					this.$store.state.username = null;
 					this.$func.createCookie("token", "", -1);

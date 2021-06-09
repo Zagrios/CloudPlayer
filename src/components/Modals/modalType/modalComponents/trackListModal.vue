@@ -1,7 +1,7 @@
 <template>
 	<span>{{title}}</span>
 	<div class="tracks-list">
-		<trackItemModal v-for="(track) in tracks" :key="track.id" :trackP="track" v-on:clickTrack="listener" :selectedP="track.id == preselectId"></trackItemModal>
+		<trackItemModal v-for="(track) in tracks" :key="track.id" :trackP="track" v-on:clickTrack="listener" :selectedP="preselectId.includes(track.id)"></trackItemModal>
 	</div>
 </template>
 
@@ -11,7 +11,7 @@ import trackItemModal from './trackItemModal.vue';
 export default {
 	data(){
 		return{
-			tracks: [...this.tracksP],
+			tracks: this.tracksP,
 			selectedTrack: this.modelValue,
 		}
 	},
@@ -30,7 +30,7 @@ export default {
 			this.$emit('update:modelValue', this.selectedTrack);
 		},
 	},
-	props:['title', 'tracksP', 'modelValue', 'preselectId'],
+	props:{title:String, tracksP:Array, modelValue:Array, preselectId:{type: Array, default:new Array()}},
 	components:{trackItemModal},
 }
 </script>

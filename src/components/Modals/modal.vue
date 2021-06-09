@@ -1,9 +1,11 @@
 <template>
 	<div class="modal" v-if="visible">
-		<span id="background" @click="closeModal"></span>
-		<upload v-if="type == 'upload'" v-on:close="closeModal"></upload>
-		<deleteTrack v-else-if="type == 'deleteTrack'" v-bind:track="passData" v-on:close="closeModal"></deleteTrack>
-		<createPlaylist v-else-if="type == 'createPlaylist'" v-on:close="closeModal"></createPlaylist>
+		<span id="background" @click="closeModal"/>
+		<upload v-if="type == 'upload'" v-on:close="closeModal"/>
+		<deleteTrack v-else-if="type == 'deleteTrack'" v-bind:track="passData" v-on:close="closeModal"/>
+		<createPlaylist v-else-if="type == 'createPlaylist'" v-on:close="closeModal"/>
+		<editPlaylist v-else-if="type == 'editPlaylist'" v-on:close="closeModal" v-bind:playlist="passData"/>
+		<removeFromPlaylist v-else-if="type == 'removeFromPlaylist'" v-on:close="closeModal" v-bind:playlist="passData.playlist" v-bind:track="passData.track"/>
 	</div>
 </template>
 
@@ -12,6 +14,8 @@
 import upload from './modalType/upload.vue'
 import deleteTrack from './modalType/deleteTrack.vue'
 import createPlaylist from './modalType/createPlaylist.vue'
+import editPlaylist from './modalType/editPlaylist.vue'
+import removeFromPlaylist from './modalType/removeFromPlaylist.vue'
 
 export default {
 	name:'modal',
@@ -38,11 +42,12 @@ export default {
 		upload,
 		deleteTrack,
 		createPlaylist,
+		editPlaylist,
+		removeFromPlaylist,
 	},
 	created(){
 		this.EventBus.on('openModal', (data) => {
 			this.openModal(data);
-			console.log(data);
 		})
 	},
 	

@@ -28,19 +28,12 @@ export default {
 				method:'POST',
                 url:'http://localhost/cloudmusic_back/user/forms/logout.php',
                 data
-			}).then((response) => {
-				if(response.status == 200 && response.data == 0)
-				{
-					console.log("Déconnecté !");
-				}
-				else
-				{
-					console.log("erreur")
-				}
+			}).then(() => {
+                this.$store.state.username = null;
+                this.$store.state.token = null;
+                this.$router.push({path:"/"})
 			})
-            this.$store.state.username = null;
-            this.$store.state.token = null;
-            this.$router.push({path:"/"})
+            
         },
         loadTracks: function() {
             if(!this.$store.getters.getToken){return;}

@@ -10,13 +10,14 @@
                 <span>Editer</span>
             </span>
         </div>
-		<tracksList v-bind:tracks="this.playlist.tracks" :isPlaylistItem="true"></tracksList>
+		<tracksList v-bind:tracks="this.playlist.tracks" :isPlaylistItem="true" @removeFromPlaylist="removeFromPlaylist" />
     </div>
 </template>
 
 <script>
 import { BIconPencilFill } from 'bootstrap-icons-vue';
 import tracksList from '../fragments/tracks/tracksList.vue';
+import { mapGetters } from "vuex";
 
 export default {
 	data(){
@@ -27,19 +28,37 @@ export default {
 	},
     methods:{
         openModal: function(){
-            this.EventBus.emit('openModal', {type: 'createPlaylist'});
+            this.EventBus.emit('openModal', {type: 'editPlaylist', parms:this.playlist});
+        },
+        setPlaylist:function(){
+            var playlists = this.$store.getters.getPlaylists;
+            var l = playlists.length;
+            var routename = this.$route.params.name;
+            for(var i = 0; i < l; i++){
+                if(playlists[i].name == routename){this.playlist = playlists[i]; return;}
+            }
+        },
+        removeFromPlaylist:function(track){
+            this.EventBus.emit('openModal', {type: 'removeFromPlaylist', parms:{'playlist':this.playlist, 'track':{'id':track.id, 'title': track.title ? track.title : track.filename}}});
+        },
+    },
+    computed:{
+        ...mapGetters(["getPlaylists"]),
+    },
+    watch:{
+        getPlaylists:{
+            deep:true,
+            handler(){
+                this.setPlaylist();
+            }
+        },
+        '$route.params.name':function(){
+            this.setPlaylist();
         }
     },
     components:{ BIconPencilFill, tracksList },
-	mounted(){
-		var playlists = this.$store.getters.getPlaylists;
-		var l = playlists.length;
-		var routename = this.$route.params.name;
-		console.log(routename+" "+l);
-		for(var i = 0; i < l; i++){
-			if(playlists[i].name == routename){this.playlist = playlists[i]; return;}
-		}
-		
+	created(){
+		this.setPlaylist();
 	},
 }
 </script>

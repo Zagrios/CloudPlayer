@@ -13,6 +13,10 @@ const store = Vuex.createStore({
 		setTracks(state, tracks){ state.tracks = tracks; },
 		setPlaylists(state, playlists){ state.playlists = playlists; },
 		addPlaylist(state, playlist){ state.playlists.push(playlist); },
+		updatePlaylist(state, playlist){
+			var l = state.playlists.length;
+			for(var i = 0; i < l; i++){ if(state.playlists[i].id == playlist.id){ state.playlists[i] = playlist; return; } }
+		},
 	},
 	getters:{
 		getToken: state => {return state.token;},

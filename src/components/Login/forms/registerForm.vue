@@ -72,7 +72,6 @@ export default {
                 url:'http://localhost/cloudmusic_back/user/forms/register.php',
                 data
             }).then(response => {
-                console.log(response)
                 if(response['status'] == 200 && response['data'] == 0)
                 {
                     Swal.fire({

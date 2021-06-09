@@ -26,6 +26,23 @@ export const func = {
 		}
 		return [...arrContain, ...arrNotContain];
 	},
+	asignTrackToPlaylist:(tracks, playlist) => {
+		if(!playlist){return;}
+		if(!playlist.tracks){return;}
+		if(playlist.tracks.length <= 0){return;}
+        if(playlist.tracks[0].filename){return;}
+		var len = playlist.tracks.length;
+		var globalTracks = tracks;
+		var globalLen = globalTracks.length;
+        var finalTracks = Array();
+		for(var i = 0; i < len; i++){
+			var trackId = playlist.tracks[i];
+			for(var j = 0; j < globalLen; j++){
+				if(trackId == globalTracks[j].id){finalTracks.push(globalTracks[j])}
+			}
+		}
+        playlist.tracks = finalTracks;
+	},
 
 //#region Compare Functions	
 	compare: (a, b, reverse = false) => {

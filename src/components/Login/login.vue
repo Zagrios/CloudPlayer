@@ -20,7 +20,6 @@ export default {
 	methods:{
 		toggle:function(){this.isToggle = !this.isToggle;},
 		createSession:function(remember, token){
-			console.log("BB")
 			if(remember)
 			{
 				this.$func.createCookie("token", token, 60);

@@ -21,11 +21,11 @@ export default {
     methods:{
         getImg: function(){
             if(this.track.img && this.track.img != ""){return this.track.img;}
-            return require("@/assets/defaultTrack.webp")
+            return require("@/assets/defaultTrack.webp");
         },
         setSelected: function(){
             this.selected = !this.selected;
-            this.$emit('clickTrack', this.track.id, this.selected)
+            this.$emit('clickTrack', this.track.id, this.selected);
         },
         getTitle(){
             if(this.track.title && this.track.title != ""){return this.track.title;}

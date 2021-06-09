@@ -1,7 +1,7 @@
 <template>
-	<div id="create-playlist">
+	<div id="edit-playlist">
 		<div class="head">
-			<span class="title" @click="test">Créer une playlist</span>
+			<span class="title" @click="test">Editer une playlist</span>
 			<span id="error-msg" v-if="error">{{errMessage}}</span>
 		</div>
 		<div class="main">
@@ -12,11 +12,11 @@
 				</div>
 			</div>
 			<div id="tracks-wrapper">
-				<trackListModal :title="'Choisisser vos musiques'" :tracksP="$store.getters.getTracks" v-model="selectedTrack"/>
+				<trackListModal :title="'Ajouter ou enlever des musiques'" :tracksP="$store.getters.getTracks" v-model="selectedTrack" :preselectId="preselectedIds"/>
 			</div>
 		</div>
 		<div class="bottom">
-			<span class="btn" id="createBtn" @click="createPlaylist()">Créer</span>
+			<span class="btn" id="createBtn" @click="editPlaylist()">Enregistrer</span>
 			<span class="btn" id="cancelBtn" @click="$emit('close')">Annuler</span>
 		</div>
 	</div>
@@ -29,25 +29,30 @@ import axios from 'axios';
 export default {
 	data(){
 		return{
-			name:"",
+			name:this.playlist.name,
 			selectedTrack:new Array(),
+			preselectedIds:new Array(),
 			error: false,
 			errMessage : "",
 		}
 	},
 	methods:{
-		createPlaylist: function(){
+		editPlaylist: function(){
 			this.error = false;
 			this.errMessage = "";
 			if(this.name.length <= 1){this.error = true; this.errMessage = "Le nom de la playlist est trop court"; return;}
 			var data = new FormData();
 			data.append('token', this.$store.getters.getToken);
+			data.append('old_name', this.playlist.name);
 			data.append('name', this.name);
 			this.selectedTrack.forEach((id) => {data.append('tracksId[]', id)});
 			axios.post("http://localhost/cloudmusic_back/user/actions/createPlaylist.php", data).then((response) => {
 				var data = response.data;
 				if(response.status == 200 && data.status == 0){
-					this.$store.commit('addPlaylist', data.playlist);
+					this.$router.push("/home/playlists/"+this.name);
+					var playlist = data.playlist;
+					this.$func.asignTrackToPlaylist(this.$store.getters.getTracks, playlist)
+					this.$store.commit('updatePlaylist', playlist);
 					this.$emit('close');
 				}
 				else{
@@ -60,13 +65,21 @@ export default {
 			});
 		},
 	},
+	created(){
+		if(!this.playlist.tracks){return;}
+		var tracks = this.playlist.tracks;
+		var ids = new Array();
+		tracks.forEach(track => ids.push(track.id));
+		this.preselectedIds = ids;
+	},
+	props:{playlist:Object},
 	components:{trackListModal},
 }
 </script>
 
 <style lang='scss' scoped>
 
-#create-playlist{
+#edit-playlist{
     z-index: 1;
     width: 650px;
     margin-bottom: 50px;

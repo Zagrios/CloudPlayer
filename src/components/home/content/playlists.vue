@@ -38,10 +38,8 @@ export default {
 			method: "GET",
 			url: "http://localhost/cloudmusic_back/user/actions/getPlaylists.php?token="+token,
 		}).then((response) => {
-			console.log(response);
             var res = response.data;
 			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
-				console.log(res.playlists);
                 this.$store.commit('setPlaylists', res.playlists);
 			}
 		});

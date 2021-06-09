@@ -1,7 +1,7 @@
 <template>
 	<div id="track-list">
 		<div id="wrapper">
-			<trackItem v-for="(track) in tracks" v-bind:key="track.id" :trackP="track" :isPlaylistItem="isPlaylistItem"></trackItem>
+			<trackItem v-for="(track) in tracks" v-bind:key="track.id" :trackP="track" :isPlaylistItem="isPlaylistItem" @removeFromPlaylist="removeFromPlaylist"></trackItem>
 		</div>
 	</div>
 </template>
@@ -12,12 +12,14 @@ import trackItem from "./trackItem";
 export default {
     name:'tracksList',
     props:{tracks:Object(), isPlaylistItem:{type:Boolean, default:false}},
+    methods:{
+      removeFromPlaylist: function(data){
+        this.$emit('removeFromPlaylist', data);
+      }
+    },
     components:{
         trackItem,
     },
-    created(){
-      console.log(this.tracks);
-    }
 }
 </script>
 

@@ -44,7 +44,6 @@ export default {
     methods:{
         noAccountClick:function(){this.$emit("switch");},
 		login:function(){
-			console.log("DD")
 			if(this.$store.getters.getToken != null){return;}
 			let data = new FormData();
 			data.append('username',this.username);
@@ -61,7 +60,6 @@ export default {
 				{
 					
 					this.$emit("sessionCreated", this.rememberMe, response.data.token);
-					console.log("CC")
 				}
 				else
 				{

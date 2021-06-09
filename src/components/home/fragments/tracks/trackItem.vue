@@ -51,6 +51,7 @@ export default {
         },
         openDeleteTrackModal:function(){
             if(!this.isPlaylistItem){this.EventBus.emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle()}}); return;}
+            else{ this.$emit('removeFromPlaylist', this.track); }
         },
         getImg: function(){
             if(this.track.img && this.track.img != ""){return this.track.img;}
@@ -91,7 +92,6 @@ export default {
     },
     props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}},
     mounted(){
-        console.log(this.isPlaylistItem)
         if(this.track.img != null){return}
         var token = this.$store.getters.getToken;
         var trackId = this.track.id;
