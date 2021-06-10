@@ -10,7 +10,7 @@
                 <span>Créer</span>
             </span>
         </div>
-        <playlistList :playlists="this.$store.getters.getPlaylists" />
+        <playlistList :playlists="this.$store.getters.getPlaylists" @clickDeleteButton="deletePlaylist" @openFolder="openPlaylist" @download="downloadPlaylist"/>
     </div>
 </template>
 
@@ -30,6 +30,19 @@ export default {
         openModal: function(){
             this.EventBus.emit('openModal', {type: 'createPlaylist'});
         },
+        deletePlaylist:function(data){
+            this.EventBus.emit('openModal', {type: 'deletePlaylist', parms:{'playlist': data}});
+        },
+        openPlaylist:function(playlist){
+            this.$router.push("/home/playlists/"+playlist.name);
+        },
+        downloadPlaylist:function(playlist){
+            if(!playlist.tracks || playlist.tracks == null || playlist.tracks.length <= 0){return;}
+            var tracksIds = playlist.tracks.map(e => e.id);
+            var tracksIdsUrl = tracksIds.map(function(el, idx){ return 'tracksIds[' + idx + ']=' + el; }).join('&');
+            var token = this.$store.getters.getToken;
+            window.location.assign("http://localhost/cloudmusic_back/user/actions/downloadTracks.php?token="+token+"&name="+playlist.name+"&"+tracksIdsUrl);
+        }
     },
 	created(){
 		if(this.$store.getters.getPlaylists.length > 0){return;}

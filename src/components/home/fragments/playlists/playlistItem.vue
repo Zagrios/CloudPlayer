@@ -18,7 +18,7 @@
                 </div>
                 <div class="actions">
                         <span class="download" title="Télécharger" @click="download"> <BIconDownload/> </span>
-                        <span class="delete" title="Supprimer" @click="openDeleteTrackModal"> <BIconTrash/> </span>
+                        <span class="delete" title="Supprimer" @click="clickDeleteButton"> <BIconTrash/> </span>
                 </div>
             </div>
         </div>
@@ -45,7 +45,13 @@ export default {
             return (element.offsetHeight < element.scrollHeight || element.offsetWidth < element.scrollWidth)
         },
         openFolder:function(){
-            this.$emit('openFolder', this.playlist)
+            this.$emit('openFolder', this.playlist);
+        },
+        clickDeleteButton:function(){
+            this.$emit('clickDeleteButton', this.playlist);
+        },
+        download:function(){
+            this.$emit('download', this.playlist);
         },
         switchInfoOpen:function(){ this.info = !this.info; },
 	},
@@ -59,9 +65,10 @@ export default {
 			return require("@/assets/defaultTrack.webp");
 		},
         nbTracks:function(){
-            return this.playlist.tracks.length;
+            return this.playlist.tracks ? this.playlist.tracks.length : 0;
         },
         totalLength:function(){
+            if(this.nbTracks <= 0){ return '00:00'; }
             function pad(n, z) { z = z || 2; return ('00' + n).slice(-z); }
             const conversionTable = {seconds: 1000,minutes: 60*1000,hours: 60*60*1000,days: 24*60*60*1000,};
             const convertTime = (opts) => Object.keys(opts).reduce((fin, timeKey) => (fin + opts[timeKey] * conversionTable[timeKey]), 0);
@@ -85,6 +92,7 @@ export default {
             return humanized;
         },
         totalSize:function(){
+            if(this.nbTracks <= 0){ return "Vide"; }
             var totalMo = 0
             this.playlist.tracks.forEach(track => {
                 totalMo += parseFloat(track.size);

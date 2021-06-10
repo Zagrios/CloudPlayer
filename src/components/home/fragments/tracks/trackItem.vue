@@ -47,7 +47,7 @@ export default {
             this.switchInfoOpen();
             var token = this.$store.getters.getToken;
             var trackId = this.track.id;
-            window.open("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);
+            window.location.assign("http://localhost/cloudmusic_back/user/actions/downloadTrack.php?token="+token+"&trackId="+trackId);
         },
         openDeleteTrackModal:function(){
             if(!this.isPlaylistItem){this.EventBus.emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle()}}); return;}

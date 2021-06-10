@@ -1,11 +1,11 @@
 <template>
-    <div id="delete-track">
+    <div id="delete-playlist">
         <div id="head">
-            <span>Supprimer ?</span>
+            <span>Supprimer la playlist ?</span>
             <span id="error-msg" v-if="error">Une erreur est survenue</span>
         </div>
         <div class="track-wrapper">   
-            <span v-if="!deleting" class="track">Voulez vous vraiment supprimer {{track.title}} ? Cette opération ne peut pas être annulé.</span>
+            <span v-if="!deleting" class="track">Voulez vous vraiment supprimer {{playlist.name}} ? Cette opération ne peut pas être annulé.</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
         <div id="bottom">
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
     name:'deleteTrack',
@@ -28,46 +28,38 @@ export default {
     },
     methods:{
         deleteTrack:function(){
-            if(!this.track || !this.track.trackId){return;}
-            var trackId = this.track.trackId;
+            if(!this.playlist || !this.playlist.id){return;}
+            var playlistId = this.playlist.id;
             var token = this.$store.getters.getToken;
             let data = new FormData();
             data.append("token", token);
-            data.append("trackId", trackId);
+            data.append("playlistId", playlistId);
             this.deleting = true;
             this.error = false;
             axios({
                 method:'POST',
-                url:'http://localhost/cloudmusic_back/user/actions/deleteTrack.php',
+                url:'http://localhost/cloudmusic_back/user/actions/deletePlaylist.php',
                 data
             }).then((response) => {
                 this.deleting = false;
-                if(response.status == 200 && response.data == 0){this.deleteTrackFromStore(this.track.trackId); this.$emit('close'); return;}
+                if(response.status == 200 && response.data == 0){ this.deletePlaylistFromStore(this.playlist.id); this.$emit('close'); return;}
                 this.error = true;
             });
         },
-        deleteTrackFromStore:function(id){
-            const index = this.$store.getters.getTracks.map(e => e.id).indexOf(id);
-            if(index != -1){ this.$store.state.tracks.splice(index, 1); this.deleteTrackOfPlaylists(id)}
+        deletePlaylistFromStore:function(id){
+            const index = this.$store.getters.getPlaylists.map(e => e.id).indexOf(id);
+            if(index != -1){ this.$store.state.playlists.splice(index, 1); }
         },
-        deleteTrackOfPlaylists:function(id){
-          this.$store.getters.getPlaylists.forEach((playlist) => {
-            var l = playlist.tracks.length;
-            for(var i = 0; i < l; i++){
-              if(playlist.tracks[i].id == id){ playlist.tracks.splice(i, 1); break; }
-            }
-          })
-        }
     },
     props:{
-        track:Object,
+        playlist:Object,
     },
 }
 </script>
 
 <style lang='scss' scoped>
 
-#delete-track{
+#delete-playlist{
     z-index: 1;
     width: 650px;
     margin-bottom: 50px;

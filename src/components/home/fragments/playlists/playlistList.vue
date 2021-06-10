@@ -1,7 +1,7 @@
 <template>
 	<div id="playlist-list">
 		<div id="wrapper">
-			<playlistItem v-for="(playlist) in playlists" v-bind:key="playlist.id" :playlistP="playlist" v-on:openFolder="openPlaylist"></playlistItem>
+			<playlistItem v-for="(playlist) in playlists" v-bind:key="playlist.id" :playlistP="playlist" v-on:openFolder="openFolder" @clickDeleteButton="clickDeleteButton" @download="download"></playlistItem>
 		</div>
 	</div>
 </template>
@@ -13,9 +13,15 @@ export default {
     name:'playlistList',
     props:['playlists'],
     methods:{
-      openPlaylist:function(playlist){
-        this.$router.push("/home/playlists/"+playlist.name);
+      openFolder:function(playlist){
+        this.$emit('openFolder', playlist);
       },
+      clickDeleteButton:function(data){
+        this.$emit('clickDeleteButton', data);
+      },
+      download:function(data){
+        this.$emit('download', data);
+      }
     },
     components:{
         playlistItem,
