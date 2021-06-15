@@ -88,7 +88,6 @@ export default {
             const hours = Math.floor((totalMs  / 1000 / 3600 ) % 24)
             var humanized = [pad(hours.toString(), 2), pad(minutes.toString(), 2), pad(seconds.toString(), 2),];
             humanized = humanized[0] == '00' ? humanized.splice(1, 2).join(':') : humanized.join(':');
-            console.log(this.playlist);
             return humanized;
         },
         totalSize:function(){

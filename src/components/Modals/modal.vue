@@ -7,6 +7,7 @@
 		<editPlaylist v-else-if="type == 'editPlaylist'" v-on:close="closeModal" v-bind:playlist="passData"/>
 		<removeFromPlaylist v-else-if="type == 'removeFromPlaylist'" v-on:close="closeModal" v-bind:playlist="passData.playlist" v-bind:track="passData.track"/>
 		<deletePlaylist v-else-if="type == 'deletePlaylist'" v-on:close="closeModal" v-bind:playlist="passData.playlist"/>
+		<deleteTracks  v-else-if="type == 'deleteTracks'" v-on:close="closeModal" v-bind:playlist="passData.playlist" v-bind:type="passData.type"/>
 	</div>
 </template>
 
@@ -18,6 +19,7 @@ import createPlaylist from './modalType/createPlaylist.vue'
 import editPlaylist from './modalType/editPlaylist.vue'
 import removeFromPlaylist from './modalType/removeFromPlaylist.vue'
 import deletePlaylist from './modalType/deletePlaylist.vue';
+import deleteTracks from './modalType/deleteTracks.vue';
 
 export default {
 	name:'modal',
@@ -47,6 +49,7 @@ export default {
 		editPlaylist,
 		removeFromPlaylist,
 		deletePlaylist,
+		deleteTracks,
 	},
 	created(){
 		this.EventBus.on('openModal', (data) => {

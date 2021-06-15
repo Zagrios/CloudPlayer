@@ -1,7 +1,7 @@
 <template>
 	<div id="playlist-list">
 		<div id="wrapper">
-			<playlistItem v-for="(playlist) in playlists" v-bind:key="playlist.id" :playlistP="playlist" v-on:openFolder="openFolder" @clickDeleteButton="clickDeleteButton" @download="download"></playlistItem>
+			<playlistItem v-for="(playlist, index) in playlists" v-bind:key="index" :playlistP="playlist" v-on:openFolder="openFolder" @clickDeleteButton="clickDeleteButton" @download="download"></playlistItem>
 		</div>
 	</div>
 </template>

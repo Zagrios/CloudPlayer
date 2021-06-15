@@ -1,7 +1,7 @@
 <template>
     <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="track">
-            <img :src="getImg()" :key="refreshToken"/>
+            <img :src="getImg()" :key="refreshToken" @click="play"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
@@ -43,6 +43,9 @@ export default {
         }
     },
     methods:{
+		play:function(){
+			this.$emit('play', this.$.vnode.key);
+		},
         download: function(){
             this.switchInfoOpen();
             var token = this.$store.getters.getToken;

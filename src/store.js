@@ -5,9 +5,12 @@ const store = Vuex.createStore({
 		token: null,
 		username: null,
 		isLoad: false,
-		currentPlaying: null,
 		tracks:Array(),
 		playlists:Array(),
+		artists:Array(),
+		albums:Array(),
+		currentPlaylist: Array(),
+		indexStartToPlay: 0,
 	},
 	mutations:{
 		setTracks(state, tracks){ state.tracks = tracks; },
@@ -17,12 +20,19 @@ const store = Vuex.createStore({
 			var l = state.playlists.length;
 			for(var i = 0; i < l; i++){ if(state.playlists[i].id == playlist.id){ state.playlists[i] = playlist; return; } }
 		},
+		setArtists(state, artists){ state.artists = artists; },
+		setAlbums(state, albums){ state.albums = albums; },
+		setCurrentPlaylist(state, {tracks, index = 0}){ state.currentPlaylist = tracks; state.indexStartToPlay = index;}
 	},
 	getters:{
+		getCurrentPlaylist: state => {return state.currentPlaylist;},
+		getIndexStartToPlay: state => {return state.indexStartToPlay;},
 		getToken: state => {return state.token;},
 		getUserName: state => {return state.username;},
 		getTracks: state => {return state.tracks;},
 		getPlaylists: state => {return state.playlists;},
+		getArtists: state => {return state.artists;},
+		getAlbums: state => {return state.albums;},
 	},
 });
 export default store;

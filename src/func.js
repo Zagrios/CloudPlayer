@@ -8,6 +8,16 @@ export const func = {
 			}
 			document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 	},
+	getCookie: (name) => {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++){
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	},
 	arrayMove:(arr, fromIndex, toIndex) => {
 		var el = arr[fromIndex];
 		arr.splice(fromIndex, 1);
@@ -42,6 +52,34 @@ export const func = {
 			}
 		}
         playlist.tracks = finalTracks;
+	},
+	asignArtist: function(tracks){
+		if(!tracks){return new Array()}
+		if(tracks.length <= 0){return new Array()}
+		var artists = new Array();
+		tracks.forEach(track => {
+			if(track.artist && track.artist != "")
+			{
+				var index = artists.map(e => e.name).indexOf(track.artist)
+				if(index != -1){ artists[index].tracks.push(track); }
+				else { var artist = {'name':track.artist, 'tracks':[track]}; artists.push(artist); }
+			}
+		})
+		return artists;
+	},
+	asignAlbum:function(tracks){
+		if(!tracks){return new Array()}
+		if(tracks.length <= 0){return new Array()}
+		var albums = new Array();
+		tracks.forEach(track => {
+			if(track.album && track.album != "")
+			{
+				var index = albums.map(e => e.name).indexOf(track.album);
+				if(index != -1){ albums[index].tracks.push(track); }
+				else { var album = {'name':track.album, 'tracks':[track]}; albums.push(album); }
+			}
+		})
+		return albums;
 	},
 
 //#region Compare Functions	

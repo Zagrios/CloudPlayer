@@ -31,12 +31,12 @@
                     <span>Favoris</span>
                 </div>
                 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/artists')}" @click="changePath('/home/artists')">
                     <BIconMusicNote class="icon"/>
                     <span>Artistes</span>
                 </div>
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/albums')}" @click="changePath('/home/albums')">
                     <BIconDisc class="icon"/>
                     <span>Albums</span>
                 </div>
@@ -77,7 +77,7 @@ export default {
             if(path != this.$router.currentRoute.path){this.$router.push({path:path}); this.updateKey++;}
         },
         checkPath: function(path) {
-            return path == this.$route.path ? true : false;
+            return this.$route.path.includes(path) ? true : false;
         }
     },
     components:{BIconList, BIconPerson, BIconMusicNoteBeamed, BIconMusicNoteList, BIconHeart, BIconMusicNote, BIconDisc, BIconGear, BIconBoxArrowLeft},
