@@ -1,7 +1,7 @@
 <template>
 	<div id="track-list">
 		<div id="wrapper">
-			<trackItem v-for="(track, index) in tracks" :key="index" :trackP="track" :isPlaylistItem="isPlaylistItem" @removeFromPlaylist="removeFromPlaylist" @play="play"></trackItem>
+			<trackItem v-for="(track, index) in tracks" :key="track.id" :index="index" :trackP="track" :isPlaylistItem="isPlaylistItem" @removeFromPlaylist="removeFromPlaylist" @play="play"></trackItem>
 		</div>
 	</div>
 </template>

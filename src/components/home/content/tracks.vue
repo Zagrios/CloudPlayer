@@ -10,7 +10,7 @@
                 <span>Ajouter</span>
             </span>
         </div>
-        <track-list v-bind:tracks="this.$store.getters.getTracks"></track-list>
+        <track-list v-bind:tracks="this.$store.getters.getTracks" :i="updateKey"></track-list>
     </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
         },
         search:function(){
             if(!this.searchString){ this.$store.state.tracks = this.$store.state.tracks.sort(this.$func.compareName); }
-            else{ this.$store.state.tracks = this.$func.sortArrayBySearch(this.$store.state.tracks, this.searchString); }
+            else{ this.$store.commit('setTracks', this.$func.sortArrayBySearch(this.$store.state.tracks, this.searchString));}
         }
     },
     

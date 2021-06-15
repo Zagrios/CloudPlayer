@@ -59,6 +59,7 @@ export default {
             tempVolume: 0,
 			currentTrackIndex : -1,
 			playlist: Array(),
+			originalPlaylist: Array(),
         }
     },
 	methods:{
@@ -145,6 +146,26 @@ export default {
 			if(this.currentTrackIndex - 1 < 0){this.currentTrackIndex = this.playlist.length-1;}
 			else {this.currentTrackIndex--}
 		},
+		shufflePlaylist:function(){
+			if(!this.playlist){return;}
+			var currentTrack = this.playlist[this.currentTrackIndex];
+			this.$func.shuffle(this.playlist);
+			var newIndex = this.playlist.map(e => e.id).indexOf(currentTrack.id);
+			if(this.currentTrackIndex != newIndex){
+				var tempTrack = this.playlist[this.currentTrackIndex];
+				this.playlist[this.currentTrackIndex] = currentTrack;
+				this.playlist[newIndex] = tempTrack;
+			}
+		},
+		unshufflePlaylist:function(){
+			if(!this.playlist){return;}
+			var currentTrack = this.playlist[this.currentTrackIndex];
+			this.playlist = [...this.originalPlaylist];
+			console.log(this.currentTrackIndex);
+			console.log(this.originalPlaylist);
+			console.log(this.playlist);
+			this.currentTrackIndex = this.playlist.map(e => e.id).indexOf(currentTrack.id);
+		},
 	},
 	computed:{ ...mapGetters(["getCurrentPlaylist"]), },
 	watch:{
@@ -153,6 +174,7 @@ export default {
 				this.playing = false;
 				if(!this.$store.getters.getCurrentPlaylist || this.$store.getters.getCurrentPlaylist.length <= 0 || !this.$store.getters.getCurrentPlaylist[0].id){return;}
 				this.playlist = this.$store.getters.getCurrentPlaylist;
+				this.originalPlaylist = [...this.playlist];
 				this.currentTrackIndex = -1;
 				this.currentTrackIndex = this.$store.getters.getIndexStartToPlay;
             }
@@ -160,7 +182,11 @@ export default {
 		currentTrackIndex:{
 			deep:true,
 			handler(){
+				console.log(this.currentTrackIndex);
 				if(this.currentTrackIndex == -1 || this.currentTrackIndex >= this.playlist.length){return;}
+				var token = this.$store.getters.getToken;
+				var url = "http://localhost/cloudmusic_back/user/actions/playSong.php?token="+token+"&trackId="+this.playlist[this.currentTrackIndex].id;
+				if(this.audio.src == url){return;}
 				this.play(this.playlist[this.currentTrackIndex]);
 			}
 		},
@@ -179,6 +205,13 @@ export default {
 				localStorage.setItem("playerVolume", this.volume);
 			}
 		},
+		shuffle:{
+			deep:true,
+			handler(){
+				if(this.shuffle){this.shufflePlaylist();}
+				else{this.unshufflePlaylist();}
+			}
+		}
     },
 	mounted(){
 		this.audio = this.$refs.audio;
@@ -337,6 +370,7 @@ export default {
             color: rgb(0, 254, 255);
         }
         .control{
+			cursor: pointer;
             margin-left: 8px;
             margin-right: 8px;
             &:hover{

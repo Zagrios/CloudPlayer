@@ -44,7 +44,7 @@ export default {
     },
     methods:{
 		play:function(){
-			this.$emit('play', this.$.vnode.key);
+			this.$emit('play', this.index);
 		},
         download: function(){
             this.switchInfoOpen();
@@ -93,7 +93,7 @@ export default {
         },
         switchInfoOpen:function(){ this.info = !this.info; },
     },
-    props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}},
+    props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}, index:Number,},
     mounted(){
         if(this.track.img != null){return}
         var token = this.$store.getters.getToken;
