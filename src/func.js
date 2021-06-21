@@ -90,25 +90,40 @@ export const func = {
 		}
 		return array;
 	},
+	sortPlaylistBySearch:function(playlists, search){
+		search = search.toLowerCase();
+		var arrContain = Array();
+		var arrNotContain = Array();
+		search;
+		playlists.forEach(playlist => {
+			if(playlist.name.toLowerCase().includes(search)){arrContain.push(playlist);}
+			else if(playlist.tracks && playlist.tracks.length > 0){
+				var finded = false;
+				for(var i = 0; i < playlist.tracks.length; i++){
+					if(playlist.tracks[i].filename.toLowerCase().includes(search)){finded = true; break;}
+				}
+				if(finded){ arrContain.push(playlist); } else { arrNotContain.push(playlist); }
+			}
+			else{arrNotContain.push(playlist);}
+		})
+		return [...arrContain, ...arrNotContain];
+	},
 
 //#region Compare Functions	
 	compare: (a, b, reverse = false) => {
-		if(!reverse){
-			if ( a < b ){ return -1; }
-			if ( a > b ){ return 1; }
-		}
-		else{
-			if ( a > b ){ return -1; }
-			if ( a < b ){ return 1; }
-		}
-		return 0;
+		return reverse ? b.localeCompare(a) : a.localeCompare(b);
 	},
 	compareName:(a, b, reverse = false) => {
 		var titleA = a.title && a.title != "" ? a.title : a.filename;
 		var titleB = b.title && b.title != "" ? b.title : b.filename;
 		return func.compare(titleA, titleB, reverse);
 	},
-	compareNameReverse:(a, b) => {return func.compareName(a, b, true)}
+	compareNameReverse:(a, b) => {return func.compareName(a, b, true)},
+
+	comparePlaylist:(a, b, reverse = false) => {
+		return func.compare(a.name, b.name, reverse);
+	},
+	comparePlaylistReverse:(a, b) => {return func.comparePlaylist(a, b, true)},
 //#endregion
 
  }

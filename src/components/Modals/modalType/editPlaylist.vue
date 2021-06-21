@@ -53,6 +53,7 @@ export default {
 					var playlist = data.playlist;
 					this.$func.asignTrackToPlaylist(this.$store.getters.getTracks, playlist)
 					this.$store.commit('updatePlaylist', playlist);
+					this.$store.getters.getPlaylists.sort(this.$func.comparePlaylist);
 					this.$emit('close');
 				}
 				else{

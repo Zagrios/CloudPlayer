@@ -23,7 +23,7 @@
                     <BIconPlayFill class="control font-main" v-if="!playing" @click="playing = !playing"/>
                     <BIconPauseFill class="control font-main" v-else @click="playing = !playing" />
                     <BIconSkipEndFill class="control font-second" @click="next"/>
-                    <BIconArrowRepeat class="control font-third" @click="loop = !loop" :class="{active: loop}"/>
+                    <BIconArrowRepeat class="control font-third" @click="setLoop" :class="{active: loop}"/>
                 </div>
                 
             </div>
@@ -147,7 +147,7 @@ export default {
 			else {this.currentTrackIndex--}
 		},
 		shufflePlaylist:function(){
-			if(!this.playlist){return;}
+			if(!this.playlist || this.playlist.length <= 0){return;}
 			var currentTrack = this.playlist[this.currentTrackIndex];
 			this.$func.shuffle(this.playlist);
 			var newIndex = this.playlist.map(e => e.id).indexOf(currentTrack.id);
@@ -158,13 +158,17 @@ export default {
 			}
 		},
 		unshufflePlaylist:function(){
-			if(!this.playlist){return;}
+			if(!this.playlist || this.playlist.length <= 0){return;}
 			var currentTrack = this.playlist[this.currentTrackIndex];
 			this.playlist = [...this.originalPlaylist];
 			console.log(this.currentTrackIndex);
 			console.log(this.originalPlaylist);
 			console.log(this.playlist);
 			this.currentTrackIndex = this.playlist.map(e => e.id).indexOf(currentTrack.id);
+		},
+		setLoop:function(){
+			this.loop = !this.loop;
+			localStorage.setItem("loop", this.loop);
 		},
 	},
 	computed:{ ...mapGetters(["getCurrentPlaylist"]), },
@@ -177,12 +181,12 @@ export default {
 				this.originalPlaylist = [...this.playlist];
 				this.currentTrackIndex = -1;
 				this.currentTrackIndex = this.$store.getters.getIndexStartToPlay;
+				if(this.shuffle){this.shufflePlaylist();}
             }
         },
 		currentTrackIndex:{
 			deep:true,
 			handler(){
-				console.log(this.currentTrackIndex);
 				if(this.currentTrackIndex == -1 || this.currentTrackIndex >= this.playlist.length){return;}
 				var token = this.$store.getters.getToken;
 				var url = "http://localhost/cloudmusic_back/user/actions/playSong.php?token="+token+"&trackId="+this.playlist[this.currentTrackIndex].id;
@@ -210,6 +214,7 @@ export default {
 			handler(){
 				if(this.shuffle){this.shufflePlaylist();}
 				else{this.unshufflePlaylist();}
+				localStorage.setItem("shuffle", this.shuffle);
 			}
 		}
     },
@@ -218,6 +223,8 @@ export default {
 	},
 	created(){
 		this.volume = localStorage.getItem("playerVolume") ? localStorage.getItem("playerVolume") : 50;
+		this.shuffle = localStorage.getItem("shuffle") ? localStorage.getItem("shuffle") : false;
+		this.loop = localStorage.getItem("loop") ? localStorage.getItem("loop") : false;
 	},
     components:{BIconShuffle, BIconSkipStartFill, BIconPlayFill, BIconPauseFill, BIconSkipEndFill, BIconArrowRepeat, BIconVolumeMuteFill, BIconVolumeDownFill, BIconVolumeUpFill},
 }
@@ -291,6 +298,7 @@ export default {
             #track{
                 #track-image{
                     height: 100%;
+					max-width: 75px;
                     float: left;
                 }
                 #info-wrapper{

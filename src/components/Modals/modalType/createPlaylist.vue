@@ -48,6 +48,7 @@ export default {
 				var data = response.data;
 				if(response.status == 200 && data.status == 0){
 					this.$store.commit('addPlaylist', data.playlist);
+					this.$store.getters.getPlaylists.sort(this.$func.comparePlaylist);
 					this.$emit('close');
 				}
 				else{

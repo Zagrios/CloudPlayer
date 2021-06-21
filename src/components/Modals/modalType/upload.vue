@@ -6,19 +6,27 @@
 		</div>
 		<div id="main">
 			<form id="form">
-				<input type="file" id="files" multiple accept="audio/*" @change="saveFiles" />
-				<span id="note">
-					<BIconDownload v-if="!uploading" class="icon"/>
+				<span class="switch-mod-btn" v-if="!youtubeUpload" @click="youtubeUpload = !youtubeUpload">Lien Youtube</span>
+				<span class="switch-mod-btn" v-if="youtubeUpload" @click="youtubeUpload = !youtubeUpload">Fichiers</span>
+				<template v-if="!youtubeUpload">
+					<input type="file" id="files" multiple accept="audio/*" @change="saveFiles" />
+					<span id="note">
+						<BIconDownload v-if="!uploading" class="icon"/>
+						<div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+						<span v-if="!uploading">Glisser-déposer vos musiques</span>
+						<span class="progress" v-else><span v-bind:style="{ width:this.uploadPercent+'%' }"></span></span>
+					</span>
+					<span id="files-text">{{ showFiles() }}</span>
+				</template>
+				<template v-else>
+					<span v-if="!uploading" class="input-wrapper"><input type="text" placeholder="Coller ici le lien de la vidéo Youtube" v-model="youtubeLink"></span>
 					<div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-					<span v-if="!uploading">Glisser-déposer vos musiques</span>
-					<span class="progress" v-else><span v-bind:style="{ width:this.uploadPercent+'%' }"></span></span>
-				</span>
-				<span id="files-text">{{ showFiles() }}</span>
+				</template>
 			</form>
 		</div>
 		<div id="bottom">
 			<span class="btn" id="saveBtn" @click="uploadMusics">Ajouter</span>
-			<span class="btn" id="cancelBtn" @click="$emit('close')">Annuler</span>
+			<span class="btn" id="cancelBtn" @click="close">Annuler</span>
 		</div>
 	</div>
 </template>
@@ -36,9 +44,18 @@ export default {
 			uploadPercent: 0,
 			error : false,
 			errorMsg: "test",
+			youtubeUpload: false,
+			youtubeLink: "",
 		};
 	},
 	methods: {
+		close:function(){
+			if(this.uploading){return;}
+			this.$emit('close')
+		},
+		validateUrl:function(url){
+			return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(url);
+		},
 		setProgressBar: function(percent){
 			this.uploadPercent = percent;
 		},
@@ -55,7 +72,38 @@ export default {
 			}
 			return s;
 		},
+		uploadFromYoutube:function(){
+			this.error = false; this.errorMsg = "";
+			if(this.uploading){return;}
+			if(!this.youtubeLink){return;}
+			if(!this.validateUrl(this.youtubeLink)){this.errorMsg = "Lien Youtube invalide"; this.error = true; return;}
+			var fd = new FormData();
+			fd.append('token', this.$store.getters.getToken);
+			fd.append('url', this.youtubeLink);
+			this.uploading = true;
+			axios({
+				method: "POST",
+				url: "http://localhost/cloudmusic_back/user/actions/youtubeUpload.php",
+				data: fd,
+			}).then((response) => {
+				this.uploading = false;
+				var data = response.data;
+				if (response.status == 200 && data.status == 0 && data.tracks) 
+				{
+					this.addMusicsToStore(data.tracks);
+					this.$emit('close');
+				} 
+				else 
+				{
+					this.error = true;
+					if(!response || !response.status || response.status != 200 || data.status == 1){this.errorMsg = "Une erreur est survenue"; return;}
+					else if(data.status == 2){this.errorMsg = "Vous possédez déjà cette musique"; return;}
+					else{this.errorMsg = "Une erreur est survenue"; return;}
+				}
+			});
+		},
 		uploadMusics: function () {
+			if(this.youtubeUpload){this.uploadFromYoutube(); return;}
 			this.error = false;
 			this.errorMsg = "";
 			if (!this.musics || !this.musics.length) {return;}
@@ -157,6 +205,23 @@ export default {
 			flex-direction: column;
 			border: dashed white 3px;
 			border-radius: 5px;
+			.switch-mod-btn{
+				position: absolute;
+				top: 7px;
+				right: 7px;
+				color: white;
+				font-size: .8em;
+				cursor: pointer;
+				background-color: rgb(61, 61, 61);
+				width: 100px;
+				text-align: center;
+				z-index: 2;
+				border: solid black 0;
+				border-radius: 10px;
+				transition: background-color .1s ease;
+				user-select: none;
+				&:hover{background-color: rgb(97, 96, 96);}
+			}
 			#files {
 				position: absolute;
 				width: 100%;
@@ -242,6 +307,32 @@ export default {
 			}
 		}
 	}
+}
+
+#upload-modal{
+	.input-wrapper{
+		background-color: rgb(75, 75, 75);
+		width: 80%;
+		height: 50px;
+		overflow: hidden;
+		border:0;
+		border-radius: 50px;
+		padding-left: 10px;
+		input[type=text]{
+			width: 100%;
+			height: 100%;
+			background-color: rgba($color: #000000, $alpha: 0.0);
+			border: 0;
+			letter-spacing: 1px;
+			font-size: 1.1em;
+			outline: none;
+			color:white;
+			&::placeholder{
+				color: rgb(214, 214, 214);
+			}
+		}
+	}
+	
 }
 
 /* #region pure css loader*/

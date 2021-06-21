@@ -22,7 +22,7 @@ const store = Vuex.createStore({
 		},
 		setArtists(state, artists){ state.artists = artists; },
 		setAlbums(state, albums){ state.albums = albums; },
-		setCurrentPlaylist(state, {tracks, index = 0}){ state.currentPlaylist = tracks; state.indexStartToPlay = index;}
+		setCurrentPlaylist(state, payload){ state.currentPlaylist = payload.tracks; state.indexStartToPlay = payload.index;}
 	},
 	getters:{
 		getCurrentPlaylist: state => {return state.currentPlaylist;},

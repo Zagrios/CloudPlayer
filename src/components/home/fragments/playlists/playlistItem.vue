@@ -7,7 +7,7 @@
             </span>
             <div class="info-display" :class="{'open':info, 'closed':!info}"> 
                 <div class="head">
-					<BIconPlayFill class="play-btn"/>
+					<BIconPlayFill class="play-btn" @click="play"/>
                     <span class="title" ref="titleText"><span class="title-text" v-bind:class="{slide: slideTitle}">{{playlist.name}}</span></span>
                     <span class="close-btn" v-if="info" @click="switchInfoOpen"><BIconXCircleFill/></span>
                 </div>
@@ -37,6 +37,9 @@ export default {
 		}
 	},
 	methods:{
+		play:function(){
+			this.$emit('play', this.playlist.tracks);
+		},
 		hoverAction:function(){
             if(this.isTitleOverflowing()){ this.slideTitle = true;}
         },

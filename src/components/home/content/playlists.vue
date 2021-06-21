@@ -3,7 +3,7 @@
         <div id="nav-bar">
             <h1>Playlists</h1>
             <span id="search-bar">
-                <input v-model="searchString" type="text" placeholder="Rechercher ...">
+                <input v-model="searchString" @keyup="search" type="text" placeholder="Rechercher ...">
             </span>
             <span id="create-btn" @click="openModal">
                 <BIconPlus id="create-icon"/>
@@ -42,7 +42,11 @@ export default {
             var tracksIdsUrl = tracksIds.map(function(el, idx){ return 'tracksIds[' + idx + ']=' + el; }).join('&');
             var token = this.$store.getters.getToken;
             window.location.assign("http://localhost/cloudmusic_back/user/actions/downloadTracks.php?token="+token+"&name="+playlist.name+"&"+tracksIdsUrl);
-        }
+        },
+		search:function(){
+			if(!this.searchString){ this.$store.getters.getPlaylists.sort(this.$func.comparePlaylist); }
+            else{ this.$store.commit('setPlaylists', this.$func.sortPlaylistBySearch(this.$store.getters.getPlaylists, this.searchString));}
+		}
     },
 	created(){
 		if(this.$store.getters.getPlaylists.length > 0){return;}
@@ -53,9 +57,12 @@ export default {
 		}).then((response) => {
             var res = response.data;
 			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
-                this.$store.commit('setPlaylists', res.playlists);
+                this.$store.commit('setPlaylists', res.playlists.sort(this.$func.comparePlaylist));
 			}
 		});
+	},
+	mounted(){
+		this.$store.commit('setPlaylists', this.$store.getters.getPlaylists.sort(this.$func.comparePlaylist));
 	},
     components:{ BIconPlus, playlistList },
 }

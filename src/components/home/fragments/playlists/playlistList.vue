@@ -1,7 +1,7 @@
 <template>
 	<div id="playlist-list">
 		<div id="wrapper">
-			<playlistItem v-for="(playlist, index) in playlists" v-bind:key="index" :playlistP="playlist" v-on:openFolder="openFolder" @clickDeleteButton="clickDeleteButton" @download="download"></playlistItem>
+			<playlistItem v-for="(playlist) in playlists" v-bind:key="playlist.id" :playlistP="playlist" v-on:openFolder="openFolder" @clickDeleteButton="clickDeleteButton" @download="download" @play="play"></playlistItem>
 		</div>
 	</div>
 </template>
@@ -13,15 +13,25 @@ export default {
     name:'playlistList',
     props:['playlists'],
     methods:{
-      openFolder:function(playlist){
-        this.$emit('openFolder', playlist);
-      },
-      clickDeleteButton:function(data){
-        this.$emit('clickDeleteButton', data);
-      },
-      download:function(data){
-        this.$emit('download', data);
-      }
+		play:function(tracks){
+			if(!tracks || tracks.length <= 0){return;}
+			var index = 0;
+			var copiedTracks = [...tracks];
+			var payload = {'tracks':copiedTracks, 'index':index};
+			this.$store.commit('setCurrentPlaylist',payload);
+			console.log("oui");
+			console.log(copiedTracks);
+			console.log(this.$store.getters.getCurrentPlaylist);
+		},
+		openFolder:function(playlist){
+			this.$emit('openFolder', playlist);
+		},
+		clickDeleteButton:function(data){
+			this.$emit('clickDeleteButton', data);
+		},
+		download:function(data){
+			this.$emit('download', data);
+		}
     },
     components:{
         playlistItem,

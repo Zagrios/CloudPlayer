@@ -18,7 +18,8 @@ export default {
 		},
 		play:function(index){
 			var tracks = [...this.tracks];
-			this.$store.commit('setCurrentPlaylist', {tracks, index});
+			var payload = {'tracks':tracks, 'index':index};
+			this.$store.commit('setCurrentPlaylist', payload);
 		}
     },
     components:{
