@@ -56,6 +56,7 @@ export default {
                 data
             }).then((response) => {
 				
+				console.log(response);
 				if(response.status == 200 && response.data.token != null)
 				{
 					

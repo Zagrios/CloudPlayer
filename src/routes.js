@@ -10,6 +10,7 @@ import artists from "./components/home/content/artists"
 import artistTracks from "./components/home/content/artistTracks"
 import albums from "./components/home/content/albums"
 import albumTracks from "./components/home/content/albumTracks"
+import options from "./components/home/content/options"
 
 const routes = [
     {path: '/', component: Init},
@@ -22,6 +23,7 @@ const routes = [
         {path: 'artists/:name', component:artistTracks},
         {path: 'albums', component:albums},
 		{path: 'albums/:name', component:albumTracks},
+		{path: 'options', component:options},
     ]}
 ]
 

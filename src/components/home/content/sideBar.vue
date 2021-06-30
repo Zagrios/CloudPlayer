@@ -43,7 +43,7 @@
 
                 <hr class="spacer">
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/options')}" @click="changePath('/home/options')">
                     <BIconGear class="icon"/>
                     <span>Options</span>
                 </div>
@@ -61,7 +61,7 @@
 
 <script>
 import {BIconList, BIconPerson, BIconMusicNoteBeamed, BIconMusicNoteList, BIconHeart, BIconMusicNote, BIconDisc, BIconGear, BIconBoxArrowLeft} from 'bootstrap-icons-vue';
-
+import axios from 'axios';
 export default {
     data(){
         return{
@@ -78,7 +78,15 @@ export default {
         },
         checkPath: function(path) {
             return this.$route.path.includes(path) ? true : false;
-        }
+        },
+		test:function(){
+			axios({
+				method: "POST",
+				url: "http://localhost/cloudmusic_back/Objects/SpaceObject.php",
+			}).then((response) => {
+				console.log(response);
+			});
+		}
     },
     components:{BIconList, BIconPerson, BIconMusicNoteBeamed, BIconMusicNoteList, BIconHeart, BIconMusicNote, BIconDisc, BIconGear, BIconBoxArrowLeft},
 }
