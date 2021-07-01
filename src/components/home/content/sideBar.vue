@@ -9,7 +9,7 @@
 
                 <hr class="spacer">
 
-                <div class="element" v-bind:class="{expand: expanded}">
+                <div class="element" v-bind:class="{expand: expanded, highlight:checkPath('/home/profil')}" @click="changePath('/home/profil')">
                     <BIconPerson class="icon"/>
                     <span>Profil</span>
                 </div>

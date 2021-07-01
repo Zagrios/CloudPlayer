@@ -11,6 +11,7 @@ import artistTracks from "./components/home/content/artistTracks"
 import albums from "./components/home/content/albums"
 import albumTracks from "./components/home/content/albumTracks"
 import options from "./components/home/content/options"
+import profil from "./components/home/content/profil"
 
 const routes = [
     {path: '/', component: Init},
@@ -24,6 +25,7 @@ const routes = [
         {path: 'albums', component:albums},
 		{path: 'albums/:name', component:albumTracks},
 		{path: 'options', component:options},
+		{path: 'profil', component:profil},
     ]}
 ]
 
