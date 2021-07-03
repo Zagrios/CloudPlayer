@@ -14,6 +14,7 @@ const store = Vuex.createStore({
 	},
 	mutations:{
 		setTracks(state, tracks){ state.tracks = tracks; },
+		setUsername(state, username){ state.username = username; },
 		setPlaylists(state, playlists){ state.playlists = playlists; },
 		addPlaylist(state, playlist){ state.playlists.push(playlist); },
 		updatePlaylist(state, playlist){
