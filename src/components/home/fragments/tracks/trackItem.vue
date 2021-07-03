@@ -1,7 +1,7 @@
 <template>
     <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="track">
-            <img :src="getImg()" :key="refreshToken" @click="play"/>
+			<img :src="getImg()" :key="refreshToken" @click="play"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
@@ -96,7 +96,7 @@ export default {
     },
     props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}, index:Number,},
     mounted(){
-        if(this.track.img != null){return}
+        if(this.track.img != null){return;}
         var token = this.$store.getters.getToken;
         var trackId = this.track.id;
 		var quality = this.getImgQuality();
@@ -105,8 +105,7 @@ export default {
 			url: "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+token+"&trackId="+trackId+"&quality="+quality,
 		}).then((response) => {
             var res = response.data;
-			if (response.status == 200 && res.status == 0) 
-			{
+			if (response.status == 200 && res.status == 0){
                 this.track.img = res.img;
                 this.refreshToken++;
 			}
