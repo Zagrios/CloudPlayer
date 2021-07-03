@@ -23,9 +23,9 @@
 			</div>
 			<div class="input-wrapper hidden" v-bind:class="{close: !usernameHasChange(), open:usernameHasChange()}">
 				<label for="edit-username">Nom d'utilisateur</label>
+				<span class="status" v-bind:class="{error:usernameStatus.error, valid:!usernameStatus.error}">{{usernameStatus.msg}}</span>
 				<input v-model="username" id="edit-username" type="text" placeholder="Nom d'utilisateur" />
-				<input id="edit-password" type="password" placeholder="Ancien mot de passe" v-model="verifyPassword"/>
-				<span v-if="usernameError != ''" class="input-form-error">{{}}</span>
+				<input type="password" placeholder="Ancien mot de passe" v-model="verifyPasswordUsername"/>
 				<div class="btn-wrapper">
 					<span class="btn save" @click="editUsername">Enregister</span>
 					<span class="btn cancel">Annuler</span>
@@ -33,21 +33,22 @@
 			</div>
 			<div class="input-wrapper hidden" v-bind:class="{close: !emailHasChange(), open:emailHasChange()}">
 				<label for="edit-email">E-mail</label>
+				<span class="status" v-bind:class="{error:emailStatus.error, valid:!emailStatus.error}">{{emailStatus.msg}}</span>
 				<input v-model="email" id="edit-email" type="email" placeholder="Adresse e-mail" />
-				<input id="edit-password" type="password" placeholder="Ancien mot de passe" v-model="verifyPassword"/>
-				<span v-if="usernameError != ''" class="input-form-error">{{}}</span>
+				<input type="password" placeholder="Ancien mot de passe" v-model="verifyPasswordEmail"/>
 				<div class="btn-wrapper">
-					<span class="btn save">Enregister</span>
+					<span class="btn save" @click="editEmail">Enregister</span>
 					<span class="btn cancel">Annuler</span>
 				</div>
 			</div>
 			<div class="input-wrapper hidden" v-bind:class="{close2: !passwordHasChange(), open2:passwordHasChange()}">
-				<label for="edit-password">Mot de passe</label>
+				<label>Mot de passe</label>
+				<span class="status" v-bind:class="{error:passwordStatus.error, valid:!passwordStatus.error}">{{passwordStatus.msg}}</span>
 				<input id="edit-new-password" type="password" placeholder="Nouveau mot de passe" v-model="newPassword"/>
 				<input id="edit-new-password-cfrm" type="password" placeholder="Comfirmer le nouveau mot de passe" v-model="newPasswordCfrm"/>
-				<input id="edit-password" type="password" placeholder="Ancien mot de passe" v-model="verifyPassword"/>
+				<input type="password" placeholder="Ancien mot de passe" v-model="verifyPasswordPass"/>
 				<div class="btn-wrapper">
-					<span class="btn save">Enregister</span>
+					<span class="btn save" @click="editPassword">Enregister</span>
 					<span class="btn cancel">Annuler</span>
 				</div>
 			</div>
@@ -64,11 +65,16 @@ export default {
 			username:this.$store.getters.getUserName,
 			previousEmail:"",
 			email:"",
-			verifyPassword:"",
+			verifyPasswordUsername:"",
+			verifyPasswordEmail:"",
+			verifyPasswordPass:"",
 			newPassword:"",
 			newPasswordCfrm:"",
 			totalStorage:2.0,
 			usedStorage:0.0,
+			usernameStatus: {error:false, msg:""},
+			emailStatus: {error:false, msg:""},
+			passwordStatus: {error:false, msg:""},
 		}
 	},
 	methods:{
@@ -76,9 +82,12 @@ export default {
 		storagePercent:function(){ return this.usedStorage*100/this.totalStorage; },
 		emailHasChange:function(){ return this.email != this.previousEmail && this.validateEmail(this.email); },
 		passwordHasChange:function(){ return this.newPassword == this.newPasswordCfrm && this.validPassword(this.newPassword)},
-		validPassword:function(pass){ 
-			const re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-			return re.test(pass); 
+		validPassword:function(pass){ const re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/; return re.test(pass); },
+		resetStatus:function(){ 
+			this.usernameStatus = {error:false, msg:""};
+			this.emailStatus = {error:false, msg:""}; 
+			this.passwordStatus = {error:false, msg:""};
+			[this.verifyPasswordUsername , this.verifyPasswordEmail , this.verifyPassword] = ""; 
 		},
 		validateEmail:function(email){
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -97,15 +106,43 @@ export default {
 		editUsername:function(){
 			var data = new FormData();
 			data.append("token", this.$store.getters.getToken);
-			data.append("password", this.verifyPassword);
+			data.append("password", this.verifyPasswordUsername);
 			data.append("newUsername", this.username);
+			this.editProfil(data, 'username', {2:"Mauvais mot de passe", 3:"Nom d'utilisateur déjà utilisé", 4:"Nom d'utilisateur invalide"});
+		},
+		editEmail:function(){
+			var data = new FormData();
+			data.append("token", this.$store.getters.getToken);
+			data.append("password", this.verifyPasswordEmail);
+			data.append("newEmail", this.email);
+			this.editProfil(data, 'email', {2:"Mauvais mot de passe", 3:"E-mail déjà utilisé", 4:"E-mail invalide"});
+		},
+		editPassword:function(){
+			var data = new FormData();
+			data.append("token", this.$store.getters.getToken);
+			data.append("password", this.verifyPasswordPass);
+			data.append("newPassword", this.newPassword);
+			this.editProfil(data, 'password', {2:"Mauvais mot de passe", 4:"Nouveau mot de passe invalide"});
+		},
+		editProfil:function(data, type, errors){
+			this.resetStatus();
 			axios.post("http://localhost/cloudmusic_back/user/actions/editUserProfil.php", data).then((response) => {
 				console.log(response);
-				if(response.status != 200 || response.data == 1){ /* something wrong */ return; }
-				if(response.data == 0){ /* All good */ return; }
-				if(response.data == 2){ /* Wrong password */ return; }
-				if(response.data == 3){ /* username not available */ return; }
-				if(response.data == 4){ /* username invalid */ return; }
+				if(type == 'username'){
+					if(response.status != 200 || response.data == 1 || response.data.length > 1){ this.usernameStatus = {error:true, msg:"Une erreur c'est produite"}; return; }
+					if(response.data == 0){ this.usernameStatus = {error:false, msg:"Enregistré"}; this.$store.commit('setUsername', this.username); return; }
+					this.usernameStatus = {error:true, msg:errors[response.data]}; return;
+				}
+				if(type == 'email'){
+					if(response.status != 200 || response.data == 1 || response.data.length > 1){ this.emailStatus = {error:true, msg:"Une erreur c'est produite"}; return; }
+					if(response.data == 0){ this.emailStatus = {error:false, msg:"Enregistré"}; this.previousEmail = this.email; return; }
+					this.emailStatus = {error:true, msg:errors[response.data]}; return;
+				}
+				if(type == 'password'){
+					if(response.status != 200 || response.data == 1 || response.data.length > 1){ this.passwordStatus = {error:true, msg:"Une erreur c'est produite"}; return; }
+					if(response.data == 0){ this.passwordStatus = {error:false, msg:"Enregistré"}; [this.verifyPassword, this.newPassword, this.newPasswordCfrm] = ""; return; }
+					this.passwordStatus = {error:true, msg:errors[response.data]}; return;
+				}
 			});
 		}
 	},
@@ -153,6 +190,7 @@ export default {
 		text-align: left;
 		margin-bottom: 20px;
 		padding: 0 7px 0 7px;
+		position: relative;
 		transition: height .2s ease;
 		label {
 			font-weight: bold;
@@ -206,6 +244,15 @@ export default {
 				transition: all .1s ease;
 			}
 		}
+		.status{
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-weight: 500;
+			letter-spacing: 1px;
+		}
+		.error{color: crimson;}
+		.valid{color: rgb(58, 212, 65)}
 
 	}
 	.close{height: 62px;}
