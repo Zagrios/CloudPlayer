@@ -124,18 +124,16 @@ export default {
 			}).then((response) => {
 				this.uploading = false;
 				var data = response.data;
-				if (response.status == 200 && data.status == 0 && data.tracks) 
+				if (response.status == 200 && data.tracks) 
 				{
 					this.addMusicsToStore(data.tracks);
-					this.$emit('close');
-				} 
-				else 
-				{
-					this.error = true;
-					if(!response || !response.status || response.status != 200 || data.status == 1){this.errorMsg = "Une erreur est survenue"; return;}
-					else if(data.status == 2){this.errorMsg = "Type de fichier non valide"; return;}
-					else{this.errorMsg = "Une erreur est survenue"; return;}
 				}
+				this.error = true;
+				if(!response || !response.status || response.status != 200 || data.status == 1){this.errorMsg = "Une erreur est survenue"; return;}
+				else if(data.status == 2){this.errorMsg = "Type de fichier non valide"; return;}
+				else if(data.status == 3){this.errorMsg = "Stockage insuffisant"; return;}
+				else if(data.status == 0){this.$emit('close');}
+				this.errorMsg = "Une erreur est survenue"; return;
 			});
 		},
 		addMusicsToStore:function(tracks){
