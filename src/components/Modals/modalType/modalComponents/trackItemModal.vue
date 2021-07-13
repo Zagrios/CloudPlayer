@@ -1,6 +1,6 @@
 <template>
   <div id="trackItemModal" :class="{'unselected': !selected, 'selected':selected}" @click="setSelected()">
-      <img :src="getImg()">
+      <img v-lazy="{src:getImgUrl(), loading:require('@/assets/defaultTrack.webp'), error:require('@/assets/defaultTrack.webp')}">
       <div class="info">
           <span class="title">{{getTitle()}}</span>
           <span class="artist">{{getArtist()}}</span>
@@ -19,10 +19,10 @@ export default {
     },
     props:['trackP', 'selectedP'],
     methods:{
-        getImg: function(){
-            if(this.track.img && this.track.img != ""){return this.track.img;}
-            return require("@/assets/defaultTrack.webp");
-        },
+        getImgUrl:function(){
+			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
+			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+this.track.id+"&quality="+quality;
+		},
         setSelected: function(){
             this.selected = !this.selected;
             this.$emit('clickTrack', this.track.id, this.selected);

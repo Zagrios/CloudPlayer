@@ -1,7 +1,7 @@
 <template>
 	<div class="playlist-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="playlist">
-            <img :src="getImg" @click="openFolder"/>
+            <img @click="openFolder" v-lazy="{src:getImgUrl, loading:require('@/assets/defaultTrack.webp'), error:require('@/assets/defaultTrack.webp')}"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
@@ -59,13 +59,11 @@ export default {
         switchInfoOpen:function(){ this.info = !this.info; },
 	},
 	computed:{
-		getImg:function(){
-			if(!this.playlist.tracks || this.playlist.tracks.length <= 0){return require("@/assets/defaultTrack.webp");}
-			var l = this.playlist.tracks.length;
-			for(var i = 0; i < l; i++){
-				if(this.playlist.tracks[i].img && this.playlist.tracks[i].img != ""){ return this.playlist.tracks[i].img; } 
-			}
-			return require("@/assets/defaultTrack.webp");
+		getImgUrl:function(){
+			var track = this.playlist.tracks ? this.playlist.tracks[0] : null;
+			if(!track){ return require('@/assets/defaultTrack.webp'); }
+			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
+			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+track.id+"&quality="+quality;
 		},
         nbTracks:function(){
             return this.playlist.tracks ? this.playlist.tracks.length : 0;

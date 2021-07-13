@@ -8,7 +8,7 @@
         </div>
         <div id="elements">
             <div id="track">
-                <img id="track-image" :src="getImg()" alt="" srcset="">
+                <img id="track-image" v-lazy="{src:getImgUrl(), loading:require('@/assets/defaultTrack.webp'), error:require('@/assets/defaultTrack.webp')}">
                 <div id="info-wrapper">
                     <span id="title">{{getTitle()}}</span>
                     <span id="artist">{{getArtist()}}</span>
@@ -72,9 +72,10 @@ export default {
 			this.audio.play();
 			this.playing = true;
 		},
-		getImg:function(){
-			if(this.currentTrackIndex != -1 && this.playlist[this.currentTrackIndex] && this.playlist[this.currentTrackIndex].img){ return this.playlist[this.currentTrackIndex].img; }
-			else{ return require("@/assets/defaultTrack.webp"); } 
+		getImgUrl:function(){
+			if(!this.playlist[this.currentTrackIndex]){return require("@/assets/defaultTrack.webp")}
+			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
+			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+this.playlist[this.currentTrackIndex].id+"&quality="+quality;
 		},
 		getTitle:function(){
 			if(!this.playlist || this.playlist.length == 0 || this.currentTrackIndex == -1){ return "Titre"; }

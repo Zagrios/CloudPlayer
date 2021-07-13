@@ -1,7 +1,7 @@
 <template>
     <div class="track-wrapper" @mouseover="hoverAction" @mouseleave="slideTitle = false">
         <div class="track">
-			<img :src="getImg()" :key="refreshToken" @click="play"/>
+			<img :key="refreshToken" @click="play" v-lazy="{src:getImgUrl(), loading:require('@/assets/defaultTrack.webp'), error:require('@/assets/defaultTrack.webp')}"/>
             <span class="info-btn" @click="switchInfoOpen">
                 <BIconInfo/>
             </span>
@@ -56,10 +56,10 @@ export default {
             if(!this.isPlaylistItem){this.EventBus.emit('openModal', {type:'deleteTrack', parms:{trackId:this.track.id, title:this.getTitle()}}); return;}
             else{ this.$emit('removeFromPlaylist', this.track); }
         },
-        getImg: function(){
-            if(this.track.img && this.track.img != ""){return this.track.img;}
-            else{return require("@/assets/defaultTrack.webp")}
-        },
+        getImgUrl:function(){
+			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
+			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+this.track.id+"&quality="+quality;
+		},
         getArtist: function(){
             if(this.track.artist && this.track.artist != ""){return this.track.artist;}
             else{return "Inconnu";}
@@ -95,22 +95,6 @@ export default {
         switchInfoOpen:function(){ this.info = !this.info; },
     },
     props:{trackP: Object, isPlaylistItem:{type: Boolean, default:false}, index:Number,},
-    mounted(){
-        if(this.track.img != null){return;}
-        var token = this.$store.getters.getToken;
-        var trackId = this.track.id;
-		var quality = this.getImgQuality();
-        axios({
-			method: "GET",
-			url: "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+token+"&trackId="+trackId+"&quality="+quality,
-		}).then((response) => {
-            var res = response.data;
-			if (response.status == 200 && res.status == 0){
-                this.track.img = res.img;
-                this.refreshToken++;
-			}
-		});
-    },
     components:{
         BIconInfo, BIconHeart, BIconHeartFill, BIconXCircleFill, BIconDownload, BIconTrash,
     }

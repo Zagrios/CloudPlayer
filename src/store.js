@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 
 const store = Vuex.createStore({
 	state: {
+		apiUrl: "http://localhost/cloudmusic_back/api/",
 		token: null,
 		username: null,
 		isLoad: false,
@@ -26,6 +27,7 @@ const store = Vuex.createStore({
 		setCurrentPlaylist(state, payload){ state.currentPlaylist = payload.tracks; state.indexStartToPlay = payload.index;}
 	},
 	getters:{
+		getApiUrl: state => {return state.apiUrl;},
 		getCurrentPlaylist: state => {return state.currentPlaylist;},
 		getIndexStartToPlay: state => {return state.indexStartToPlay;},
 		getToken: state => {return state.token;},
