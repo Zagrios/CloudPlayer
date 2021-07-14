@@ -8,7 +8,7 @@
         </div>
         <div id="elements">
             <div id="track">
-                <img id="track-image" v-lazy="{src:getImgUrl(), loading:require('@/assets/defaultTrack.webp'), error:require('@/assets/defaultTrack.webp')}">
+                <img id="track-image" :src="getImgUrl">
                 <div id="info-wrapper">
                     <span id="title">{{getTitle()}}</span>
                     <span id="artist">{{getArtist()}}</span>
@@ -60,10 +60,12 @@ export default {
 			currentTrackIndex : -1,
 			playlist: Array(),
 			originalPlaylist: Array(),
+			updateKey:0,
         }
     },
 	methods:{
 		play: function(track){
+			this.updateKey++;
 			this.audio.pause();
 			var token = this.$store.getters.getToken;
 			var url = "http://localhost/cloudmusic_back/user/actions/playSong.php?token="+token+"&trackId="+track.id;
@@ -72,11 +74,7 @@ export default {
 			this.audio.play();
 			this.playing = true;
 		},
-		getImgUrl:function(){
-			if(!this.playlist[this.currentTrackIndex]){return require("@/assets/defaultTrack.webp")}
-			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
-			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+this.playlist[this.currentTrackIndex].id+"&quality="+quality;
-		},
+		
 		getTitle:function(){
 			if(!this.playlist || this.playlist.length == 0 || this.currentTrackIndex == -1){ return "Titre"; }
 			if(this.currentTrackIndex != -1 && this.playlist[this.currentTrackIndex] && this.playlist[this.currentTrackIndex].title && this.playlist[this.currentTrackIndex].title != ""){ return this.playlist[this.currentTrackIndex].title}
@@ -172,7 +170,15 @@ export default {
 			localStorage.setItem("loop", this.loop);
 		},
 	},
-	computed:{ ...mapGetters(["getCurrentPlaylist"]), },
+	computed:{ 
+		...mapGetters(["getCurrentPlaylist"]), 
+		getImgUrl:function(){
+			if(!this.playlist[this.currentTrackIndex]){return require("@/assets/defaultTrack.webp")}
+			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
+			console.log("AHH");
+			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+this.playlist[this.currentTrackIndex].id+"&quality="+quality;
+		},
+	},
 	watch:{
         getCurrentPlaylist:{
             handler(){
@@ -300,6 +306,8 @@ export default {
                 #track-image{
                     height: 100%;
 					max-width: 75px;
+					object-fit:cover;
+					border-style: none;
                     float: left;
                 }
                 #info-wrapper{
