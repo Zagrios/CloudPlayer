@@ -41,7 +41,7 @@ export default {
             data.append("token", this.$store.getters.getToken);
             axios({
                 method:'POST',
-                url:'http://localhost/cloudmusic_back/user/actions/getAllTracksInfo.php',
+                url: this.$store.getters.getApiUrl+"get/getAllTracksInfo.php",
                 data
             }).then((response) => {
                 var data = response.data;

@@ -63,7 +63,7 @@ export default {
 			var track = this.playlist.tracks ? this.playlist.tracks[0] : null;
 			if(!track){ return require('@/assets/defaultTrack.webp'); }
 			var quality = localStorage.getItem("thumbnails_quality") ? localStorage.getItem("thumbnails_quality") : 50;
-			return "http://localhost/cloudmusic_back/user/actions/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+track.id+"&quality="+quality;
+			return this.$store.getters.getApiUrl+"get/getTrackImg.php?token="+this.$store.getters.getToken+"&trackId="+track.id+"&quality="+quality;
 		},
         nbTracks:function(){
             return this.playlist.tracks ? this.playlist.tracks.length : 0;
