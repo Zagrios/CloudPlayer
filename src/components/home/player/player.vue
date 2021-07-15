@@ -61,6 +61,7 @@ export default {
 			playlist: Array(),
 			originalPlaylist: Array(),
 			updateKey:0,
+			deleting:false,
         }
     },
 	methods:{
@@ -169,6 +170,16 @@ export default {
 			this.loop = !this.loop;
 			localStorage.setItem("loop", this.loop);
 		},
+		trackStillExist:function(index){
+			return this.$store.getters.getTracks.map(e => e.filename).indexOf(this.playlist[index].filename) == -1 ? false : true;
+		},
+		removeTrack:function(index){
+			this.deleting = true;
+			var filename = this.playlist[index].filename;
+			this.playlist.splice(index, 1);
+			this.originalPlaylist.splice(this.originalPlaylist.map(e => e.filename).indexOf(filename), 1);
+			this.deleting = false;
+		}
 	},
 	computed:{ 
 		...mapGetters(["getCurrentPlaylist"]), 
@@ -182,6 +193,7 @@ export default {
 	watch:{
         getCurrentPlaylist:{
             handler(){
+				if(this.deleting){ return; }
 				this.playing = false;
 				if(!this.$store.getters.getCurrentPlaylist || this.$store.getters.getCurrentPlaylist.length <= 0 || !this.$store.getters.getCurrentPlaylist[0].id){return;}
 				this.playlist = this.$store.getters.getCurrentPlaylist;
@@ -195,6 +207,7 @@ export default {
 			deep:true,
 			handler(){
 				if(this.currentTrackIndex == -1 || this.currentTrackIndex >= this.playlist.length){return;}
+				if(!this.trackStillExist(this.currentTrackIndex)){ this.removeTrack(this.currentTrackIndex); }
 				var token = this.$store.getters.getToken;
 				var url = "http://localhost/cloudmusic_back/user/actions/playSong.php?token="+token+"&trackId="+this.playlist[this.currentTrackIndex].id;
 				if(this.audio.src == url){return;}
