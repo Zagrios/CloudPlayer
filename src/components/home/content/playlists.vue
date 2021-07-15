@@ -53,7 +53,7 @@ export default {
 		var token = this.$store.getters.getToken;
 		axios({
 			method: "GET",
-			url: "http://localhost/cloudmusic_back/user/actions/getPlaylists.php?token="+token,
+			url: this.$store.getters.getApiUrl+"get/getPlaylists.php?token="+token,
 		}).then((response) => {
             var res = response.data;
 			if (response.status == 200 && res.status == 0 && res.playlists.length > 0) {
