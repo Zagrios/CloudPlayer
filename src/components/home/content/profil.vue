@@ -94,12 +94,13 @@ export default {
             return re.test(String(email).toLowerCase());
         },
 		getInfos:function(){
-			axios.get("http://localhost/cloudmusic_back/user/actions/getUserInfo.php?token="+this.$store.getters.getToken).then((response) => {
+			axios.get(this.$store.getters.getApiUrl+"get/getUserInfo.php?token="+this.$store.getters.getToken).then((response) => {
 				if(response.status == 200 && response.data.status == 0){
 					var data = response.data.data;
 					this.email = data.email;
 					this.previousEmail = data.email;
-					this.usedStorage = data.used_storage;
+					this.totalStorage = data.max_storage;
+					this.usedStorage = Number(this.totalStorage - data.free_storage).toFixed(1);
 				}
 			});
 		},
