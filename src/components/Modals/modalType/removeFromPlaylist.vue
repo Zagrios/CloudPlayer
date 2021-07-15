@@ -26,6 +26,7 @@ export default {
     },
     methods:{
         deleteTrack:function(){
+			console.log(this.playlist);
 			var playlistId = this.playlist.id;
 			var trackId = this.track.id;
 			var token = this.$store.getters.getToken;
