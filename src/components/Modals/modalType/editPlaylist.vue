@@ -46,7 +46,7 @@ export default {
 			data.append('old_name', this.playlist.name);
 			data.append('name', this.name);
 			this.selectedTrack.forEach((id) => {data.append('tracksId[]', id)});
-			axios.post("http://localhost/cloudmusic_back/user/actions/createPlaylist.php", data).then((response) => {
+			axios.post(this.$store.getters.getApiUrl+"post/createPlaylist.php", data).then((response) => {
 				var data = response.data;
 				if(response.status == 200 && data.status == 0){
 					this.$router.push("/home/playlists/"+this.name);

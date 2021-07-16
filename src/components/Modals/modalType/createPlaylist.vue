@@ -44,7 +44,7 @@ export default {
 			data.append('token', this.$store.getters.getToken);
 			data.append('name', this.name);
 			this.selectedTrack.forEach((id) => {data.append('tracksId[]', id)});
-			axios.post("http://localhost/cloudmusic_back/user/actions/createPlaylist.php", data).then((response) => {
+			axios.post(this.$store.getters.getApiUrl+"post/createPlaylist.php", data).then((response) => {
 				var data = response.data;
 				if(response.status == 200 && data.status == 0){
 					this.$store.commit('addPlaylist', data.playlist);
